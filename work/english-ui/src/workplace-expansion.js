@@ -1,0 +1,185 @@
+import { defineLesson } from './lesson-format.js';
+
+// Workplace additions extend colleague communication to clients, demos and interviews.
+export const expandedWorkChapters = [
+  ['W09', '与客户确认需求和范围', 'Clarifying client requirements', 'MessagesSquare', '职场沟通', '问清交付 · 核对范围 · 评估变更', 'What would a successful result look like for you?', '对你来说，什么样的结果算成功？'],
+  ['W10', '演示产品与回答问题', 'Product demos and questions', 'BookOpen', '职场沟通', '介绍步骤 · 确认理解 · 查证未知', 'Let me walk you through the main steps.', '我来带你看一下主要步骤。'],
+  ['W11', '面试与介绍工作经历', 'Interviews and experience', 'CircleUserRound', '职场沟通', '说明职责 · 举例成果 · 了解岗位', 'I was responsible for coordinating the project timeline.', '我负责协调项目时间安排。'],
+];
+
+// Examples describe fictional projects; achievements and commitments must be truthful in use.
+export const expandedWorkLessons = {
+  W09: defineLesson('W09', {
+    scenario: '客户希望“尽快做一个简单报表”，你问清使用者、必要字段和成功标准。客户随后追加导出功能时，先评估范围与时间影响，再确认书面方案，不默默接受所有新增要求。',
+    phrases: ['success criteria 成功标准', 'a must-have feature 必备功能', 'the agreed scope 已约定范围', 'an additional request 新增要求', 'a revised estimate 更新后的估算', 'written approval 书面确认'],
+    core: [
+      ['What would a successful result look like for you?', '对你来说，什么样的结果算成功？', '项目负责人', '把笼统评价问成可观察的结果，便于双方确认是否达到目标。'],
+      ['Who will be using this report?', '谁会使用这份报表？', '项目负责人'],
+      ['Which fields are essential for the first version?', '第一版必须包含哪些字段？', '项目负责人'],
+      ['Could you give me an example of what you need?', '能给我一个你需要的例子吗？', '项目负责人'],
+      ['When you say soon, do you have a specific date in mind?', '你说尽快，是有具体日期吗？', '项目负责人'],
+      ['Let me summarize what we have agreed.', '我总结一下我们已经达成的共识。', '项目负责人'],
+      ['The export feature is outside the current scope.', '导出功能不在当前约定范围内。', '项目负责人', 'outside the scope 说明范围差异；接着提供评估或取舍方案，不只拒绝。'],
+      ['We can review the impact on the timeline and cost.', '我们可以评估对时间和费用的影响。', '项目负责人'],
+      ['Would you prefer to add this now or in a later phase?', '你希望现在加入，还是后续阶段再做？', '项目负责人'],
+      ['If we add this, we will need to revise the estimate.', '如果加入这一项，我们需要更新估算。', '项目负责人'],
+      ['Could you confirm the priorities in writing?', '能以书面方式确认优先级吗？', '项目负责人'],
+      ['We will start once the revised scope is approved.', '更新后的范围获确认后，我们再开始。', '项目负责人', 'once 指条件达成后；不要把尚未确认的估算说成确定承诺。'],
+    ],
+    dialogues: [
+      ['把模糊需求问具体', '明确用户、字段和交付日期', [
+        ['客户', 'We need a simple sales report as soon as possible.', '我们需要尽快做一个简单销售报表。'],
+        ['项目负责人', 'Who will be using this report, and what would a successful result look like for you?', '谁会使用它，对你来说什么结果算成功？'],
+        ['客户', 'Our team leads need to compare weekly sales by region.', '团队负责人需要比较各区域的每周销售额。'],
+        ['项目负责人', 'Which fields are essential for the first version?', '第一版必须包含哪些字段？'],
+        ['客户', 'Region, week and total sales. A chart would be useful, but it is not essential.', '区域、周和总销售额，有图表会有帮助，但不是必须。'],
+        ['项目负责人', 'When you say soon, do you have a specific date in mind?', '你说尽快，是有具体日期吗？'],
+        ['客户', 'We would like to review a first version on Friday.', '我们希望周五评审第一版。'],
+        ['项目负责人', 'I will check feasibility and send you the proposed scope and schedule today.', '我会核查可行性，今天发送拟定范围和时间安排。'],
+      ]],
+      ['新增功能需要取舍', '评估影响，再确认是否纳入', [
+        ['客户', 'Could you also add an export button? It should be a small change.', '也加个导出按钮好吗，应该只是小改动。'],
+        ['项目负责人', 'The export feature is outside the current scope. We can review the impact on the timeline and cost.', '导出不在当前约定范围内，我们可以评估对时间和费用的影响。'],
+        ['客户', 'What would that involve?', '需要做哪些事情？'],
+        ['项目负责人', 'We need to confirm the file format, fields and access rules before estimating.', '估算前要确认文件格式、字段和访问规则。'],
+        ['客户', 'Can we keep Friday for the report and add export later?', '报表仍按周五评审，导出以后再加可以吗？'],
+        ['项目负责人', 'That is an option. I will send the revised plan for your approval.', '这是一个选项，我会发更新后的计划请你确认。'],
+      ]],
+    ],
+    branches: [
+      ['需求只说简单一点', '请对方给例子，核对具体变化', [
+        ['客户', 'Could you make the page simpler?', '能把页面做得简单一点吗？'],
+        ['项目负责人', 'Could you give me an example of what feels complicated?', '能举一个让你觉得复杂的地方吗？'],
+        ['客户', 'There are too many filters. We only use region and week.', '筛选项太多了，我们只用区域和周。'],
+        ['项目负责人', 'Understood. I will propose showing those first and review the other filters with you.', '明白，我会建议优先显示这两项，再和你核对其他筛选。'],
+      ]],
+      ['时间与范围无法同时满足', '提供明确取舍，由客户确认', [
+        ['客户', 'We need the report and export by Friday.', '我们周五前既要报表又要导出。'],
+        ['项目负责人', 'We cannot confirm both for Friday yet. We can prioritize the report or revise the delivery date.', '目前不能确认两项都在周五完成，可以优先报表，或调整交付日期。'],
+        ['客户', 'The report is the priority. Please estimate export separately.', '报表优先，导出请单独估算。'],
+        ['项目负责人', 'Thanks. Could you confirm those priorities in writing?', '谢谢，能书面确认这些优先级吗？'],
+      ]],
+    ],
+    practice: {
+      substitutions: ['把 sales report 换成 customer dashboard，确认客户看板需求。', '把 Friday 换成 next Wednesday，问清日期。', '把 export feature 换成 email notifications，评估新增功能。'],
+      responses: [['We need it soon.', '询问具体日期。', 'When you say soon, do you have a specific date in mind?'], ['Just add one more feature.', '说明需评估对范围和时间的影响。', 'We can review the impact on the scope and timeline before confirming.'], ['The report is more important.', '请求书面确认优先级。', 'Could you confirm that priority in writing?']],
+      task: '将一个模糊需求问成用户、必备内容、成功标准和日期；遇到新增功能时给出取舍，确认书面范围后再承诺交付。',
+    },
+  }),
+  W10: defineLesson('W10', {
+    scenario: '你演示一款虚构的报表工具，先说明今天展示的流程，再展示筛选与保存视图。对方询问尚未核实的导出数量上限时，明确查证并约定回复时间；演示出现网络问题时切换准备好的截图。',
+    phrases: ['walk someone through 带人逐步了解', 'a sample report 示例报表', 'save a view 保存视图', 'a technical limit 技术限制', 'check with the team 向团队核实', 'follow up with details 补充回复详情'],
+    core: [
+      ['Let me walk you through the main steps.', '我来带你看一下主要步骤。', '演示者', 'walk you through 指逐步讲解或演示，不是让对方自己阅读长篇说明。'],
+      ['I will start with a sample report.', '我先从一份示例报表开始。', '演示者'],
+      ['First, choose the region and the date range.', '首先选择区域和日期范围。', '演示者'],
+      ['Then click Apply to update the results.', '然后点击 Apply 更新结果。', '演示者'],
+      ['You can save this view for next time.', '你可以保存这个视图，下次再用。', '演示者'],
+      ['Is that the workflow you had in mind?', '这是你设想的操作流程吗？', '演示者'],
+      ['Would you like me to show that step again?', '要我再展示一下那一步吗？', '演示者'],
+      ['What would you like to focus on next?', '接下来你想重点看什么？', '演示者'],
+      ['I do not have a confirmed answer to that yet.', '这个问题我暂时没有核实过的答案。', '演示者', '区分不知道与功能不支持；未查证前不把猜测当作产品能力。'],
+      ['Let me check with the team and get back to you.', '我向团队核实后再回复你。', '演示者'],
+      ['I will follow up with the details by tomorrow afternoon.', '我会在明天下午之前补充回复详情。', '演示者'],
+      ['The live demo is not loading. I will use the screenshots to explain the flow.', '实时演示加载不出来，我会用截图说明流程。', '演示者', '截图只展示已准备的示例，不代表实时功能已经恢复；继续确认对方的问题。'],
+    ],
+    dialogues: [
+      ['演示主要流程', '用小步骤展示，邀请对方确认', [
+        ['演示者', 'Let me walk you through the main steps. I will start with a sample report.', '我来带你看主要步骤，先从示例报表开始。'],
+        ['客户', 'Great. We mainly need to compare two regions.', '好，我们主要需要比较两个区域。'],
+        ['演示者', 'First, choose the regions and the date range. Then click Apply to update the results.', '先选区域和日期范围，再点击 Apply 更新结果。'],
+        ['客户', 'Can I use the same settings next week?', '下周能用同样的设置吗？'],
+        ['演示者', 'Yes. You can save this view for next time. Let me show you the Save view button.', '可以，能保存视图供下次使用，我展示一下 Save view 按钮。'],
+        ['客户', 'That would help us avoid selecting the filters again.', '这样我们就不用重新选筛选项了。'],
+        ['演示者', 'Exactly. Is that the workflow you had in mind?', '正是如此，这是你设想的流程吗？'],
+        ['客户', 'Yes. Could we look at exporting the results next?', '是的，接下来能看导出结果吗？'],
+      ]],
+      ['回答尚未核实的问题', '记录问题并给出查证安排', [
+        ['客户', 'How many rows can we export at once?', '一次最多能导出多少行？'],
+        ['演示者', 'I do not have a confirmed answer to that yet. About how many rows do you expect?', '我暂时没有核实过的答案，你们预计需要多少行？'],
+        ['客户', 'Around fifty thousand for a monthly report.', '月报大约五万行。'],
+        ['演示者', 'Let me check with the team whether that volume is supported and what limits apply.', '我会向团队核实是否支持这个数量，以及适用限制。'],
+        ['客户', 'When could you let us know?', '什么时候能告诉我们？'],
+        ['演示者', 'I will follow up with the details by tomorrow afternoon.', '我会在明天下午之前补充回复详情。'],
+      ]],
+    ],
+    branches: [
+      ['对方没有跟上', '重新展示具体一步', [
+        ['客户', 'I missed how you saved the view.', '我没看清刚才怎么保存视图。'],
+        ['演示者', 'Would you like me to show that step again?', '要我再展示那一步吗？'],
+        ['客户', 'Yes, please. Especially where the name is entered.', '要，谢谢，尤其是在哪里输入名称。'],
+        ['演示者', 'Click Save view, enter the name in this field, then confirm. I will do it slowly.', '点击 Save view，在这个框里输入名称，再确认，我慢一点操作。'],
+      ]],
+      ['现场演示加载失败', '说明状态，用已有素材继续解释', [
+        ['演示者', 'The live demo is not loading. I will use the screenshots to explain the flow.', '实时演示加载不出来，我会用截图说明流程。'],
+        ['客户', 'Will we still be able to see the export steps?', '我们还能看到导出步骤吗？'],
+        ['演示者', 'Yes, in the screenshots. I will also arrange a live follow-up once the issue is resolved.', '可以在截图里看，问题解决后我还会安排实时补充演示。'],
+        ['客户', 'That works. Please include our question about the row limit in the follow-up.', '可以，后续请也回复我们关于行数上限的问题。'],
+      ]],
+    ],
+    practice: {
+      substitutions: ['把 sample report 换成 sample order，介绍示例订单。', '把 region and date range 换成 status and date range，展示另一组筛选。', '把 tomorrow afternoon 换成 Friday morning，说明实际能做到的回复时间。'],
+      responses: [['I missed that step.', '询问哪部分需要再展示。', 'Of course. Which part would you like me to show again?'], ['Can it handle fifty thousand rows?', '说明尚未核实并安排查证。', 'I do not have a confirmed answer yet. Let me check with the team.'], ['The demo is not loading.', '说明改用截图并安排后续。', 'I will use the screenshots now and arrange a live follow-up once the issue is resolved.']],
+      task: '用四步演示一个熟悉的流程，每两步确认对方是否跟上；记录一个未知问题和回复时间，模拟演示失败后的替代安排。',
+    },
+  }),
+  W11: defineLesson('W11', {
+    scenario: '你应聘项目协调岗位，用虚构的三个月客户上线项目说明职责、困难、行动和结果。随后询问团队协作与前三个月目标；实际面试只使用自己真实经历，区分本人贡献与团队成果。',
+    phrases: ['be responsible for 负责', 'a project timeline 项目时间安排', 'coordinate with a team 与团队协调', 'a measurable result 可衡量结果', 'a learning opportunity 学习机会', 'the next stage 下一阶段'],
+    core: [
+      ['I was responsible for coordinating the project timeline.', '我负责协调项目时间安排。', '应聘者', '负责什么要具体说明；团队做出的结果不能全部归为个人完成。'],
+      ['I worked closely with the support and engineering teams.', '我与支持团队和工程团队密切协作。', '应聘者'],
+      ['Let me give you a specific example.', '我举一个具体例子。', '应聘者'],
+      ['The main challenge was getting updates from several teams.', '主要难点是收集多个团队的进度更新。', '应聘者'],
+      ['I introduced a shared checklist and a short weekly check-in.', '我引入了共享清单和每周简短同步。', '应聘者'],
+      ['That helped us identify delays earlier.', '这帮助我们更早发现延期。', '应聘者'],
+      ['The team completed the rollout within the agreed period.', '团队在约定时间内完成了上线。', '应聘者'],
+      ['I would do one thing differently next time.', '下次有一件事我会换一种做法。', '应聘者'],
+      ['I have not used that tool yet, but I have worked with similar systems.', '我还没用过那个工具，但用过类似系统。', '应聘者', '没有用过时如实说；类似经验可以说明学习基础，不等于已经熟练。'],
+      ['What would success look like in the first three months?', '前三个月做到什么算表现成功？', '应聘者'],
+      ['How does this role work with the rest of the team?', '这个岗位怎样与团队其他成员协作？', '应聘者'],
+      ['What are the next steps in the interview process?', '面试流程接下来有哪些步骤？', '应聘者', '询问流程和预计时间，不默认现场会获得录用决定。'],
+    ],
+    dialogues: [
+      ['用具体项目介绍经历', '说清个人行动与团队结果', [
+        ['面试官', 'Could you tell me about a project you coordinated?', '能介绍一个你协调过的项目吗？'],
+        ['应聘者', 'Let me give you a specific example. I helped coordinate a three-month customer rollout.', '我举个例子，我协助协调过一个三个月的客户上线项目。'],
+        ['面试官', 'What were you responsible for?', '你负责什么？'],
+        ['应聘者', 'I was responsible for coordinating the project timeline and collecting updates from support and engineering.', '我负责协调时间安排，以及收集支持和工程团队的进展。'],
+        ['面试官', 'What was the main challenge?', '主要难点是什么？'],
+        ['应聘者', 'Updates arrived in different formats, so I introduced a shared checklist and a short weekly check-in.', '进展更新格式各异，所以我引入共享清单和每周简短同步。'],
+        ['面试官', 'What was the result?', '结果如何？'],
+        ['应聘者', 'That helped us identify delays earlier, and the team completed the rollout within the agreed period.', '这帮助我们更早发现延期，团队在约定时间内完成上线。'],
+      ]],
+      ['了解岗位和协作方式', '把机会问具体，确认后续流程', [
+        ['面试官', 'Do you have any questions for us?', '你有什么想问我们的吗？'],
+        ['应聘者', 'Yes. What would success look like in the first three months?', '有，前三个月做到什么算表现成功？'],
+        ['面试官', 'We would want you to learn the process and independently coordinate a small rollout.', '我们希望你熟悉流程，并独立协调一个小型上线项目。'],
+        ['应聘者', 'How does this role work with the rest of the team?', '这个岗位怎样与团队其他成员协作？'],
+        ['面试官', 'You would work with an account manager and a technical lead.', '你会与客户经理和技术负责人合作。'],
+        ['应聘者', 'Thank you. What are the next steps in the interview process?', '谢谢，面试流程接下来有哪些步骤？'],
+        ['面试官', 'We will review this round and contact you about a possible second interview next week.', '我们会评估这轮表现，下周联系你是否安排第二轮。'],
+        ['应聘者', 'Thanks for explaining the role and the process.', '谢谢介绍岗位和流程。'],
+      ]],
+    ],
+    branches: [
+      ['被问到未用过的工具', '坦诚说明，联系可迁移经验', [
+        ['面试官', 'Have you used our project management platform?', '你用过我们的项目管理平台吗？'],
+        ['应聘者', 'I have not used that tool yet, but I have worked with similar systems.', '我还没用过那个工具，但用过类似系统。'],
+        ['面试官', 'How would you get up to speed?', '你会怎样尽快熟悉？'],
+        ['应聘者', 'I would learn the main workflow, practice on a sample project and check my understanding with a colleague.', '我会学习主要流程，用示例项目练习，并向同事确认理解。'],
+      ]],
+      ['被问项目中的不足', '给出具体反思，说明下一次动作', [
+        ['面试官', 'What would you do differently next time?', '下次你会做什么改变？'],
+        ['应聘者', 'I would agree on the update format before the project starts.', '我会在项目开始前约定更新格式。'],
+        ['面试官', 'Why would that help?', '这样有什么帮助？'],
+        ['应聘者', 'It would reduce follow-up questions and make risks easier to compare across teams.', '这样可以减少补问，也更容易比较不同团队的风险。'],
+      ]],
+    ],
+    practice: {
+      substitutions: ['把 project timeline 换成 customer communications，按真实职责介绍。', '把 a three-month rollout 换成 a six-week pilot，说明另一种项目。', '把 shared checklist 换成 weekly summary，说明自己实际采取的行动。'],
+      responses: [['What were you responsible for?', '具体说明协调时间和收集进展。', 'I coordinated the timeline and collected updates from the support and engineering teams.'], ['Have you used this tool?', '没用过时说明类似经验。', 'I have not used it yet, but I have worked with similar systems.'], ['Do you have any questions?', '询问前三个月目标。', 'What would success look like in the first three months?']],
+      task: '用真实经历写四句：背景、本人职责、一个具体行动、可核实结果；准备一条改进反思及两个岗位问题，不编造数字或技能。',
+    },
+  }),
+};

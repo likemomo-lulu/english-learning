@@ -1,6 +1,9 @@
+import { expandedQuickReferenceContent } from './quick-reference-expansion.js';
+
 // Rows: spoken expression, meaning, dictionary keyword, usage reminder, existing example fragment.
 // IPA belongs to the keyword, not to the entire expression or its sentence rhythm.
 export const quickReferenceContent = {
+  ...expandedQuickReferenceContent,
   D01: [
     ['latte', '拿铁', 'latte', '重音在前；点单可直接说 a latte，不必再加 coffee。', 'iced latte'],
     ['decaf', '低因咖啡', 'decaf', '是 decaffeinated 的简称，去除大部分咖啡因，不等于完全不含咖啡因。', 'make mine decaf'],

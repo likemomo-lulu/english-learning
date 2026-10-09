@@ -120,4 +120,9 @@
 .reference-example-read svg{color:var(--green)}
 .reference-example-translation{font-size:13px;line-height:1.75;color:#778178;padding-left:24px;margin-top:1px}
 .reference-playing{color:var(--green);background:#f0f7f3}
+.content-update-row{flex-wrap:wrap;gap:12px}
+.content-update-row>div{flex:1;min-width:130px}
+.content-update-row .secondary{flex:none;min-height:44px}
+.content-update-message{font-size:13px;line-height:1.75;color:#526e60;padding:10px 0;overflow-wrap:anywhere}
+.content-update-message.update-error{color:#9f483c}
 @media(max-width:760px){.quick-reference-entry{padding:18px 0}.reference-heading>.icon-button{width:44px;height:44px}.reference-phonetics{gap:2px 14px;font-size:14px}.reference-note,.reference-meaning,.reference-example-translation{font-size:14px}.reference-example-read{font-size:16px}}

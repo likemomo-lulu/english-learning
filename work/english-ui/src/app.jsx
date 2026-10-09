@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BookOpen, Bookmark, CircleUserRound, ArrowUpRight, ArrowLeft, ArrowRight, ChevronRight, Search, Play, Pause, Volume2, SkipBack, SkipForward, Eye, EyeOff, X, Download, Upload, SlidersHorizontal, Headphones, Leaf, Sparkles, Coffee, ShoppingBasket, Store, Shirt, Receipt, Utensils, CookingPot, ChefHat, WashingMachine, Hand, Package, BatteryCharging, TramFront, Ticket, Bike, Trees, MessagesSquare, Plane, Luggage, BedDouble, CarFront, LifeBuoy } from 'lucide-react';
-import { chapters, getLesson } from './data.js';
+import { bundledContent } from './bundled-content.js';
+import { loadContent, downloadContent } from './content-store.js';
 import { isNative, nativeVoices, nativeStop, nativeSpeak, nativeExportRecords } from './native-services.js';
+import { RefreshCw } from 'lucide-react';
 
-const icons = { Coffee, ShoppingBasket, Store, Shirt, Receipt, Utensils, CookingPot, ChefHat, WashingMachine, Hand, Package, BatteryCharging, TramFront, Ticket, Bike, Trees, BookOpen, MessagesSquare, Plane, Luggage, BedDouble, CarFront, LifeBuoy };
+const icons = { Coffee, ShoppingBasket, Store, Shirt, Receipt, Utensils, CookingPot, ChefHat, WashingMachine, Hand, Package, BatteryCharging, TramFront, Ticket, Bike, Trees, BookOpen, MessagesSquare, Plane, Luggage, BedDouble, CarFront, LifeBuoy, CircleUserRound, Sparkles };
 const storageKey = 'scene-english-ui-v1';
 // Category prefixes and totals follow the manuscript registry, including workplace chapters.
 const categoryPrefixes = { daily: 'D', travel: 'T', work: 'W' };
@@ -12,13 +14,15 @@ const chapterLabel = id => id.startsWith('W') ? 'WORK' : id.startsWith('T') ? 'T
 // Retain legacy learned IDs only for backup compatibility; the UI no longer tracks progress.
 const defaults = { favorites: [], learned: [], last: null, speed: 1, chinese: true, fontSize: 18, voice: '' };
 // Validate persisted sentence IDs before rendering favorites or merging old backups.
-const sentenceRegistry = new Map(chapters.flatMap(ch => {
-  const lesson = getLesson(ch);
+const initialContentState = loadContent(bundledContent);
+const initialChapters = initialContentState.content.chapters;
+const makeSentenceRegistry = chapters => new Map(chapters.flatMap(lesson => {
   return [...lesson.lines, ...lesson.dialogues.flatMap(d => d.lines), ...lesson.branches.flatMap(d => d.lines)].map(s => [s.id, s]);
 }));
-function validateData(value) {
+function validateData(value, chapters = initialChapters) {
   if (!value || typeof value !== 'object') throw new Error('学习记录格式不正确');
-  const ids = name => Array.isArray(value[name]) ? [...new Set(value[name])].filter(id => sentenceRegistry.has(id)) : [];
+  // Retain valid IDs from newer backups even if cached content cannot currently be loaded.
+  const ids = name => Array.isArray(value[name]) ? [...new Set(value[name])].filter(id => typeof id === 'string' && /^[DTW]\d{2,3}-(S|[A-Z]+-S)\d{2}$/.test(id)) : [];
   return {
     favorites: ids('favorites'), learned: ids('learned'),
     last: chapters.some(c => c.id === value.last) ? value.last : null,
@@ -38,7 +42,7 @@ function readData() {
   }
 }
 const initial = readData();
-function routeFromHash() {
+function routeFromHash(chapters = initialChapters) {
   const hash = window.location.hash.slice(1);
   if (chapters.some(ch => ch.id === hash)) return { page: 'lesson', chapterId: hash };
   return { page: ['favorites', 'profile'].includes(hash) ? hash : 'chapters', chapterId: null };
@@ -54,6 +58,11 @@ function Brand() {
 
 function App() {
   // Learning data persists locally; navigation, search and playback are transient UI state.
+  const [content, setContent] = useState(initialContentState.content);
+  const chapters = content.chapters;
+  const sentenceRegistry = useMemo(() => makeSentenceRegistry(chapters), [chapters]);
+  const contentRef = useRef(content);
+  contentRef.current = content;
   const [data, setData] = useState(initial.data);
   const [page, setPage] = useState(initialRoute.page);
   const [chapterId, setChapterId] = useState(initialRoute.chapterId || data.last || 'D02');
@@ -62,18 +71,20 @@ function App() {
   const [tab, setTab] = useState('core');
   const [part, setPart] = useState(0);
   const [playback, setPlayback] = useState({ status: 'idle', id: '', index: 0 });
-  const [toast, setToast] = useState(initial.error);
+  const [toast, setToast] = useState(initial.error || initialContentState.error);
   const [voices, setVoices] = useState([]);
   const [favoriteQuery, setFavoriteQuery] = useState('');
   const [exporting, setExporting] = useState(false);
+  const [updateState, setUpdateState] = useState({ phase: 'idle', message: '' });
+  const updateController = useRef(null);
   const speechToken = useRef(0);
   const speechTimer = useRef(null);
   const utteranceRef = useRef(null);
   const playbackRef = useRef(playback);
   const importRef = useRef(null);
   const saveBlocked = useRef(Boolean(initial.error));
-  const chapter = chapters.find(c => c.id === chapterId);
-  const lesson = getLesson(chapter);
+  const chapter = chapters.find(c => c.id === chapterId) || chapters[0];
+  const lesson = chapter;
   const groups = tab === 'dialogue' ? lesson.dialogues : lesson.branches;
   // Quick reference alternates expression and example in the existing playback queue.
   const referenceLines = lesson.quickReference.flatMap(entry => [
@@ -81,10 +92,47 @@ function App() {
     { id: `${entry.id}-EX`, chapterId, en: entry.exampleEn },
   ]);
   const lines = page === 'favorites'
-    ? data.favorites.map(id => sentenceRegistry.get(id)).filter(s => `${s.en} ${s.zh}`.toLowerCase().includes(favoriteQuery.toLowerCase()))
+    ? data.favorites.map(id => sentenceRegistry.get(id)).filter(Boolean).filter(s => `${s.en} ${s.zh}`.toLowerCase().includes(favoriteQuery.toLowerCase()))
     : tab === 'reference' ? referenceLines : tab === 'core' ? lesson.lines : groups[part]?.lines || [];
   const activeLine = lines.find(s => s.id === playback.id) || lines[0];
   const change = patch => { saveBlocked.current = false; setData(old => ({ ...old, ...patch })); };
+
+  // The startup and manual checks share a lock; failure never changes content or records.
+  async function checkContentUpdate(manual = false) {
+    if (updateController.current) return;
+    const controller = new AbortController();
+    updateController.current = controller;
+    const timeout = setTimeout(() => controller.abort(), 30000);
+    try {
+      const result = await downloadContent(contentRef.current, {
+        signal: controller.signal,
+        onPhase: phase => setUpdateState({ phase, message: phase === 'checking' ? '正在检查更新…' : phase === 'downloading' ? '正在下载教材…' : '正在保存教材…' }),
+      });
+      if (controller.signal.aborted) return;
+      if (result.updated) {
+        stop(); setTab('core'); setPart(0);
+        setPlayback({ status: 'idle', id: '', index: 0 });
+        contentRef.current = result.content;
+        setContent(result.content);
+      }
+      const message = result.updated ? `已更新到 v${result.content.version}，可离线使用` : '当前已是最新教材';
+      setUpdateState({ phase: 'idle', message });
+      if (manual || result.updated) setToast(message);
+    } catch (error) {
+      console.error('Cannot update lesson content:', error);
+      const message = error.name === 'AbortError' ? '连接超时，请重试；当前教材仍可使用。' : error instanceof TypeError ? '网络连接失败，请重试；当前教材仍可使用。' : error.message;
+      setUpdateState({ phase: 'error', message });
+      if (manual) setToast(message);
+    } finally {
+      clearTimeout(timeout);
+      updateController.current = null;
+    }
+  }
+
+  useEffect(() => {
+    checkContentUpdate();
+    return () => updateController.current?.abort();
+  }, []);
 
   useEffect(() => {
     if (saveBlocked.current) return;
@@ -122,7 +170,7 @@ function App() {
     document.addEventListener('visibilitychange', hidden);
     const pop = () => {
       stop();
-      const route = routeFromHash(); setPage(route.page);
+      const route = routeFromHash(contentRef.current.chapters); setPage(route.page);
       if (route.chapterId) { setChapterId(route.chapterId); setTab('core'); setPart(0); }
       setPlayback({ status: 'idle', id: '', index: 0 });
     };
@@ -270,7 +318,7 @@ function App() {
       if (file.size > 1024 * 1024) throw new Error('记录文件不能超过 1 MB');
       const record = JSON.parse(await file.text());
       if (record.format !== 'scene-english-records' || record.version !== 1) throw new Error('请选择本应用导出的记录文件');
-      const restored = validateData(record.data);
+      const restored = validateData(record.data, chapters);
       stop(); change({ ...restored, favorites: [...new Set([...data.favorites, ...restored.favorites])], learned: [...new Set([...data.learned, ...restored.learned])] });
       setToast('学习记录已合并');
     } catch (error) { console.error('Cannot import records:', error); setToast(error.message || '导入失败，请检查文件。'); }
@@ -332,10 +380,35 @@ function App() {
     </>;
   }
   function favoritesView() {
-    return <><div className="page-heading"><div><span className="eyebrow">WORDS TO KEEP</span><h1>我的收藏<span className="heading-dot coral">.</span></h1><p>{data.favorites.length} 句想记住的表达。</p></div><span className="large-page-icon coral"><Bookmark size={32} strokeWidth={1.5} /></span></div><label className="search-field"><Search size={18} /><input aria-label="搜索收藏" placeholder="搜索英文或中文" value={favoriteQuery} onChange={e => setFavoriteQuery(e.target.value)} />{favoriteQuery && <IconButton icon={X} label="清空搜索" onClick={() => setFavoriteQuery('')} />}</label><div className="sentence-list">{lines.map((s, i) => sentenceRow(s, i, 'favorite'))}</div>{!lines.length && <div className="empty-state"><Bookmark size={34} strokeWidth={1.5} /><h3>{favoriteQuery ? '没有找到匹配的表达' : '还没有收藏的句子'}</h3><button className="text-button" onClick={() => favoriteQuery ? setFavoriteQuery('') : navigate('chapters')}>{favoriteQuery ? '查看所有收藏' : '去选一章学习'}<ArrowRight size={16} /></button></div>}</>;
+    const missing = data.favorites.filter(id => !sentenceRegistry.has(id)).length;
+    return <>
+      <div className="page-heading"><div><span className="eyebrow">WORDS TO KEEP</span><h1>我的收藏<span className="heading-dot coral">.</span></h1><p>{data.favorites.length} 句想记住的表达。</p></div><span className="large-page-icon coral"><Bookmark size={32} strokeWidth={1.5} /></span></div>
+      <label className="search-field"><Search size={18} /><input aria-label="搜索收藏" placeholder="搜索英文或中文" value={favoriteQuery} onChange={e => setFavoriteQuery(e.target.value)} />{favoriteQuery && <IconButton icon={X} label="清空搜索" onClick={() => setFavoriteQuery('')} />}</label>
+      {missing > 0 && <p className="content-update-message">{missing} 条收藏的教材尚未下载，记录已保留。<button className="text-button" onClick={() => navigate('profile')}>检查内容更新<ArrowRight size={16} /></button></p>}
+      <div className="sentence-list">{lines.map((s, i) => sentenceRow(s, i, 'favorite'))}</div>
+      {!lines.length && !(missing > 0 && !favoriteQuery) && <div className="empty-state"><Bookmark size={34} strokeWidth={1.5} /><h3>{favoriteQuery ? '没有找到匹配的表达' : '还没有收藏的句子'}</h3><button className="text-button" onClick={() => favoriteQuery ? setFavoriteQuery('') : navigate('chapters')}>{favoriteQuery ? '查看所有收藏' : '去选一章学习'}<ArrowRight size={16} /></button></div>}
+    </>;
   }
   function profileView() {
-    return <><div className="page-heading"><div><span className="eyebrow">YOUR LEARNING SPACE</span><h1>我的学习<span className="heading-dot">.</span></h1><p>按自己的节奏，一句一句积累。</p></div><span className="large-page-icon"><CircleUserRound size={32} strokeWidth={1.5} /></span></div><section className="stats-band"><div><strong>{data.favorites.length}</strong><span>收藏表达</span></div></section><section className="settings-section"><h2>朗读与阅读</h2><div className="setting-row"><div><span>播放语速</span><small>英文朗读</small></div><select aria-label="默认播放语速" value={data.speed} onChange={e => { stop(); change({ speed: Number(e.target.value) }); }}><option value="0.75">0.75×</option><option value="1">1.0×</option><option value="1.25">1.25×</option></select></div><div className="setting-row"><div><span>英语音色</span><small>{voices.length ? '设备可用音色' : '使用设备默认英语音色'}</small></div><select aria-label="英语音色" value={data.voice} onChange={e => { stop(); change({ voice: e.target.value }); }}><option value="">默认英语音色</option>{voices.map(v => <option key={v.voiceURI} value={v.voiceURI}>{v.name} · {v.lang}{isNative ? (v.localService ? " · 离线" : " · 联网") : ""}</option>)}</select></div><div className="setting-row"><span>中文释义</span><label className="toggle"><input type="checkbox" aria-label="显示中文释义" checked={data.chinese} onChange={e => change({ chinese: e.target.checked })} /><span /></label></div><div className="setting-row"><span>英文字号</span><div className="segmented">{[18, 20, 22].map(size => <button key={size} className={data.fontSize === size ? 'active' : ''} aria-pressed={data.fontSize === size} onClick={() => change({ fontSize: size })}>{size === 18 ? '标准' : size === 20 ? '较大' : '大'}</button>)}</div></div></section><section className="settings-section"><h2>学习记录</h2><div className="setting-row"><span>导出记录</span><button className="secondary" disabled={exporting} onClick={exportRecords}><Download size={16} />{exporting ? "导出中" : "导出"}</button></div><div className="setting-row"><span>导入并合并记录</span><button className="secondary" onClick={() => importRef.current.click()}><Upload size={16} />导入</button><input ref={importRef} type="file" accept="application/json,.json" hidden onChange={importRecords} /></div></section></>;
+    const busy = ['checking', 'downloading', 'saving'].includes(updateState.phase);
+    return <>
+      <div className="page-heading"><div><span className="eyebrow">YOUR LEARNING SPACE</span><h1>我的学习<span className="heading-dot">.</span></h1><p>按自己的节奏，一句一句积累。</p></div><span className="large-page-icon"><CircleUserRound size={32} strokeWidth={1.5} /></span></div>
+      <section className="stats-band"><div><strong>{data.favorites.length}</strong><span>收藏表达</span></div></section>
+      <section className="settings-section"><h2>朗读与阅读</h2>
+        <div className="setting-row"><div><span>播放语速</span><small>英文朗读</small></div><select aria-label="默认播放语速" value={data.speed} onChange={e => { stop(); change({ speed: Number(e.target.value) }); }}><option value="0.75">0.75×</option><option value="1">1.0×</option><option value="1.25">1.25×</option></select></div>
+        <div className="setting-row"><div><span>英语音色</span><small>{voices.length ? '设备可用音色' : '使用设备默认英语音色'}</small></div><select aria-label="英语音色" value={data.voice} onChange={e => { stop(); change({ voice: e.target.value }); }}><option value="">默认英语音色</option>{voices.map(v => <option key={v.voiceURI} value={v.voiceURI}>{v.name} · {v.lang}{isNative ? (v.localService ? ' · 离线' : ' · 联网') : ''}</option>)}</select></div>
+        <div className="setting-row"><span>中文释义</span><label className="toggle"><input type="checkbox" aria-label="显示中文释义" checked={data.chinese} onChange={e => change({ chinese: e.target.checked })} /><span /></label></div>
+        <div className="setting-row"><span>英文字号</span><div className="segmented">{[18, 20, 22].map(size => <button key={size} className={data.fontSize === size ? 'active' : ''} aria-pressed={data.fontSize === size} onClick={() => change({ fontSize: size })}>{size === 18 ? '标准' : size === 20 ? '较大' : '大'}</button>)}</div></div>
+      </section>
+      <section className="settings-section"><h2>教材内容</h2>
+        <div className="setting-row content-update-row"><div><span>v{content.version} · {chapters.length} 章</span><small>内容编号 {content.revision}</small></div><button className="secondary" disabled={busy} onClick={() => checkContentUpdate(true)}><RefreshCw size={16} />{busy ? '更新中' : '检查内容更新'}</button></div>
+        {updateState.message && <p className={`content-update-message ${updateState.phase === 'error' ? 'update-error' : ''}`} role="status">{updateState.message}</p>}
+      </section>
+      <section className="settings-section"><h2>学习记录</h2>
+        <div className="setting-row"><span>导出记录</span><button className="secondary" disabled={exporting} onClick={exportRecords}><Download size={16} />{exporting ? '导出中' : '导出'}</button></div>
+        <div className="setting-row"><span>导入并合并记录</span><button className="secondary" onClick={() => importRef.current.click()}><Upload size={16} />导入</button><input ref={importRef} type="file" accept="application/json,.json" hidden onChange={importRecords} /></div>
+      </section>
+    </>;
   }
 
   const currentIndex = Math.max(0, lines.findIndex(s => s.id === activeLine?.id));

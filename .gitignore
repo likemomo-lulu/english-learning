@@ -24,3 +24,8 @@ __pycache__/
 !/outputs/english-app-ui/
 /outputs/english-app-ui/*
 !/outputs/english-app-ui/README.md
+
+# Versioned hot-update content is intentionally published.
+/content/*
+!/content/manifest.json
+!/content/pack-*.json

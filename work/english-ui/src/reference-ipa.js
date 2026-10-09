@@ -1229,5 +1229,479 @@ export const keywordIPA = {
     "us": "ˈpen.dɪŋ",
     "source": "https://dictionary.cambridge.org/dictionary/english/pending",
     "checked": "2026-10-09"
+  },
+  "reunion": {
+    "uk": "ˌriːˈjuː.njən",
+    "us": "ˌriːˈjuː.njən",
+    "source": "https://dictionary.cambridge.org/dictionary/english/reunion",
+    "checked": "2026-10-09"
+  },
+  "lunar": {
+    "uk": "ˈluː.nər",
+    "us": "ˈluː.nɚ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/lunar",
+    "checked": "2026-10-09"
+  },
+  "envelope": {
+    "uk": "ˈen.və.ləʊp",
+    "us": "ˈɑːn.və.loʊp",
+    "source": "https://dictionary.cambridge.org/dictionary/english/envelope",
+    "checked": "2026-10-09"
+  },
+  "filling": {
+    "uk": "ˈfɪl.ɪŋ",
+    "us": "ˈfɪl.ɪŋ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/filling",
+    "checked": "2026-10-09"
+  },
+  "dragon": {
+    "uk": "ˈdræɡ.ən",
+    "us": "ˈdræɡ.ən",
+    "source": "https://dictionary.cambridge.org/dictionary/english/dragon",
+    "checked": "2026-10-09"
+  },
+  "mooncake": {
+    "uk": "ˈmuːn.keɪk",
+    "us": "ˈmuːn.keɪk",
+    "source": "https://dictionary.cambridge.org/dictionary/english/mooncake",
+    "checked": "2026-10-09"
+  },
+  "pancake": {
+    "uk": "ˈpæn.keɪk",
+    "us": "ˈpæn.keɪk",
+    "source": "https://dictionary.cambridge.org/dictionary/english/pancake",
+    "checked": "2026-10-09"
+  },
+  "dumpling": {
+    "uk": "ˈdʌm.plɪŋ",
+    "us": "ˈdʌm.plɪŋ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/dumpling",
+    "checked": "2026-10-09"
+  },
+  "tofu": {
+    "uk": "ˈtəʊ.fuː",
+    "us": "ˈtoʊ.fuː",
+    "source": "https://dictionary.cambridge.org/dictionary/english/tofu",
+    "checked": "2026-10-09"
+  },
+  "broth": {
+    "uk": "brɒθ",
+    "us": "brɑːθ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/broth",
+    "checked": "2026-10-09"
+  },
+  "peppercorn": {
+    "uk": "ˈpep.ə.kɔːn",
+    "us": "ˈpep.ɚ.kɔːrn",
+    "source": "https://dictionary.cambridge.org/dictionary/english/peppercorn",
+    "checked": "2026-10-09"
+  },
+  "message": {
+    "uk": "ˈmes.ɪdʒ",
+    "us": "ˈmes.ɪdʒ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/message",
+    "checked": "2026-10-09"
+  },
+  "call": {
+    "uk": "kɔːl",
+    "us": "kɑːl",
+    "source": "https://dictionary.cambridge.org/dictionary/english/call",
+    "checked": "2026-10-09"
+  },
+  "read": {
+    "uk": "riːd",
+    "us": "riːd",
+    "source": "https://dictionary.cambridge.org/dictionary/english/read",
+    "checked": "2026-10-09"
+  },
+  "rent": {
+    "uk": "rent",
+    "us": "rent",
+    "source": "https://dictionary.cambridge.org/dictionary/english/rent",
+    "checked": "2026-10-09"
+  },
+  "deposit": {
+    "uk": "dɪˈpɒz.ɪt",
+    "us": "dɪˈpɑː.zɪt",
+    "source": "https://dictionary.cambridge.org/dictionary/english/deposit",
+    "checked": "2026-10-09"
+  },
+  "furnished": {
+    "uk": "ˈfɜː.nɪʃt",
+    "us": "ˈfɝː.nɪʃt",
+    "source": "https://dictionary.cambridge.org/dictionary/english/furnished",
+    "checked": "2026-10-09"
+  },
+  "lease": {
+    "uk": "liːs",
+    "us": "liːs",
+    "source": "https://dictionary.cambridge.org/dictionary/english/lease",
+    "checked": "2026-10-09"
+  },
+  "move": {
+    "uk": "muːv",
+    "us": "muːv",
+    "source": "https://dictionary.cambridge.org/dictionary/english/move",
+    "checked": "2026-10-09"
+  },
+  "damage": {
+    "uk": "ˈdæm.ɪdʒ",
+    "us": "ˈdæm.ɪdʒ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/damage",
+    "checked": "2026-10-09"
+  },
+  "pipe": {
+    "uk": "paɪp",
+    "us": "paɪp",
+    "source": "https://dictionary.cambridge.org/dictionary/english/pipe",
+    "checked": "2026-10-09"
+  },
+  "leak": {
+    "uk": "liːk",
+    "us": "liːk",
+    "source": "https://dictionary.cambridge.org/dictionary/english/leak",
+    "checked": "2026-10-09"
+  },
+  "fee": {
+    "uk": "fiː",
+    "us": "fiː",
+    "source": "https://dictionary.cambridge.org/dictionary/english/fee",
+    "checked": "2026-10-09"
+  },
+  "window": {
+    "uk": "ˈwɪn.dəʊ",
+    "us": "ˈwɪn.doʊ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/window",
+    "checked": "2026-10-09"
+  },
+  "decline": {
+    "uk": "dɪˈklaɪn",
+    "us": "dɪˈklaɪn",
+    "source": "https://dictionary.cambridge.org/dictionary/english/decline",
+    "checked": "2026-10-09"
+  },
+  "statement": {
+    "uk": "ˈsteɪt.mənt",
+    "us": "ˈsteɪt.mənt",
+    "source": "https://dictionary.cambridge.org/dictionary/english/statement",
+    "checked": "2026-10-09"
+  },
+  "reference": {
+    "uk": "ˈref.ər.əns",
+    "us": "ˈref.ɚ.əns",
+    "source": "https://dictionary.cambridge.org/dictionary/english/reference",
+    "checked": "2026-10-09"
+  },
+  "entrance": {
+    "uk": "ˈen.trəns",
+    "us": "ˈen.trəns",
+    "source": "https://dictionary.cambridge.org/dictionary/english/entrance",
+    "checked": "2026-10-09"
+  },
+  "deliver": {
+    "uk": "dɪˈlɪv.ər",
+    "us": "dɪˈlɪv.ɚ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/deliver",
+    "checked": "2026-10-09"
+  },
+  "invite": {
+    "uk": "ɪnˈvaɪt",
+    "us": "ɪnˈvaɪt",
+    "source": "https://dictionary.cambridge.org/dictionary/english/invite",
+    "checked": "2026-10-09"
+  },
+  "home": {
+    "uk": "həʊm",
+    "us": "hoʊm",
+    "source": "https://dictionary.cambridge.org/dictionary/english/home",
+    "checked": "2026-10-09"
+  },
+  "help": {
+    "uk": "help",
+    "us": "help",
+    "source": "https://dictionary.cambridge.org/dictionary/english/help",
+    "checked": "2026-10-09"
+  },
+  "full": {
+    "uk": "fʊl",
+    "us": "fʊl",
+    "source": "https://dictionary.cambridge.org/dictionary/english/full",
+    "checked": "2026-10-09"
+  },
+  "head": {
+    "uk": "hed",
+    "us": "hed",
+    "source": "https://dictionary.cambridge.org/dictionary/english/head",
+    "checked": "2026-10-09"
+  },
+  "early": {
+    "uk": "ˈɜː.li",
+    "us": "ˈɝː.li",
+    "source": "https://dictionary.cambridge.org/dictionary/english/early",
+    "checked": "2026-10-09"
+  },
+  "mind": {
+    "uk": "maɪnd",
+    "us": "maɪnd",
+    "source": "https://dictionary.cambridge.org/dictionary/english/mind",
+    "checked": "2026-10-09"
+  },
+  "down": {
+    "uk": "daʊn",
+    "us": "daʊn",
+    "source": "https://dictionary.cambridge.org/dictionary/english/down",
+    "checked": "2026-10-09"
+  },
+  "hallway": {
+    "uk": "ˈhɔːl.weɪ",
+    "us": "ˈhɑːl.weɪ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/hallway",
+    "checked": "2026-10-09"
+  },
+  "block": {
+    "uk": "blɒk",
+    "us": "blɑːk",
+    "source": "https://dictionary.cambridge.org/dictionary/english/block",
+    "checked": "2026-10-09"
+  },
+  "agree": {
+    "uk": "əˈɡriː",
+    "us": "əˈɡriː",
+    "source": "https://dictionary.cambridge.org/dictionary/english/agree",
+    "checked": "2026-10-09"
+  },
+  "trial": {
+    "uk": "ˈtraɪ.əl",
+    "us": "ˈtraɪ.əl",
+    "source": "https://dictionary.cambridge.org/dictionary/english/trial",
+    "checked": "2026-10-09"
+  },
+  "renew": {
+    "uk": "rɪˈnjuː",
+    "us": "rɪˈnuː",
+    "source": "https://dictionary.cambridge.org/dictionary/english/renew",
+    "checked": "2026-10-09"
+  },
+  "billing": {
+    "uk": "ˈbɪl.ɪŋ",
+    "us": "ˈbɪl.ɪŋ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/billing",
+    "checked": "2026-10-09"
+  },
+  "subscription": {
+    "uk": "səbˈskrɪp.ʃən",
+    "us": "səbˈskrɪp.ʃən",
+    "source": "https://dictionary.cambridge.org/dictionary/english/subscription",
+    "checked": "2026-10-09"
+  },
+  "commitment": {
+    "uk": "kəˈmɪt.mənt",
+    "us": "kəˈmɪt.mənt",
+    "source": "https://dictionary.cambridge.org/dictionary/english/commitment",
+    "checked": "2026-10-09"
+  },
+  "outside": {
+    "uk": "ˌaʊtˈsaɪd",
+    "us": "ˌaʊtˈsaɪd",
+    "source": "https://dictionary.cambridge.org/dictionary/english/outside",
+    "checked": "2026-10-09"
+  },
+  "know": {
+    "uk": "nəʊ",
+    "us": "noʊ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/know",
+    "checked": "2026-10-09"
+  },
+  "into": {
+    "uk": "ˈɪn.tuː",
+    "us": "ˈɪn.tuː",
+    "source": "https://dictionary.cambridge.org/dictionary/english/into",
+    "checked": "2026-10-09"
+  },
+  "about": {
+    "uk": "əˈbaʊt",
+    "us": "əˈbaʊt",
+    "source": "https://dictionary.cambridge.org/dictionary/english/about",
+    "checked": "2026-10-09"
+  },
+  "private": {
+    "uk": "ˈpraɪ.vət",
+    "us": "ˈpraɪ.vət",
+    "source": "https://dictionary.cambridge.org/dictionary/english/private",
+    "checked": "2026-10-09"
+  },
+  "touch": {
+    "uk": "tʌtʃ",
+    "us": "tʌtʃ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/touch",
+    "checked": "2026-10-09"
+  },
+  "cancel": {
+    "uk": "ˈkæn.səl",
+    "us": "ˈkæn.səl",
+    "source": "https://dictionary.cambridge.org/dictionary/english/cancel",
+    "checked": "2026-10-09"
+  },
+  "available": {
+    "uk": "əˈveɪ.lə.bəl",
+    "us": "əˈveɪ.lə.bəl",
+    "source": "https://dictionary.cambridge.org/dictionary/english/available",
+    "checked": "2026-10-09"
+  },
+  "baggage": {
+    "uk": "ˈbæɡ.ɪdʒ",
+    "us": "ˈbæɡ.ɪdʒ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/baggage",
+    "checked": "2026-10-09"
+  },
+  "purpose": {
+    "uk": "ˈpɜː.pəs",
+    "us": "ˈpɝː.pəs",
+    "source": "https://dictionary.cambridge.org/dictionary/english/purpose",
+    "checked": "2026-10-09"
+  },
+  "holiday": {
+    "uk": "ˈhɒl.ə.deɪ",
+    "us": "ˈhɑː.lə.deɪ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/holiday",
+    "checked": "2026-10-09"
+  },
+  "accommodation": {
+    "uk": "əˌkɒm.əˈdeɪ.ʃən",
+    "us": "əˌkɑː.məˈdeɪ.ʃən",
+    "source": "https://dictionary.cambridge.org/dictionary/english/accommodation",
+    "checked": "2026-10-09"
+  },
+  "return": {
+    "uk": "rɪˈtɜːn",
+    "us": "rɪˈtɝːn",
+    "source": "https://dictionary.cambridge.org/dictionary/english/return",
+    "checked": "2026-10-09"
+  },
+  "declare": {
+    "uk": "dɪˈkleər",
+    "us": "dɪˈkler",
+    "source": "https://dictionary.cambridge.org/dictionary/english/declare",
+    "checked": "2026-10-09"
+  },
+  "ingredient": {
+    "uk": "ɪnˈɡriː.di.ənt",
+    "us": "ɪnˈɡriː.di.ənt",
+    "source": "https://dictionary.cambridge.org/dictionary/english/ingredient",
+    "checked": "2026-10-09"
+  },
+  "ambulance": {
+    "uk": "ˈæm.bjə.ləns",
+    "us": "ˈæm.bjə.ləns",
+    "source": "https://dictionary.cambridge.org/dictionary/english/ambulance",
+    "checked": "2026-10-09"
+  },
+  "collapse": {
+    "uk": "kəˈlæps",
+    "us": "kəˈlæps",
+    "source": "https://dictionary.cambridge.org/dictionary/english/collapse",
+    "checked": "2026-10-09"
+  },
+  "respond": {
+    "uk": "rɪˈspɒnd",
+    "us": "rɪˈspɑːnd",
+    "source": "https://dictionary.cambridge.org/dictionary/english/respond",
+    "checked": "2026-10-09"
+  },
+  "breathe": {
+    "uk": "briːð",
+    "us": "briːð",
+    "source": "https://dictionary.cambridge.org/dictionary/english/breathe",
+    "checked": "2026-10-09"
+  },
+  "landmark": {
+    "uk": "ˈlænd.mɑːk",
+    "us": "ˈlænd.mɑːrk",
+    "source": "https://dictionary.cambridge.org/dictionary/english/landmark",
+    "checked": "2026-10-09"
+  },
+  "line": {
+    "uk": "laɪn",
+    "us": "laɪn",
+    "source": "https://dictionary.cambridge.org/dictionary/english/line",
+    "checked": "2026-10-09"
+  },
+  "successful": {
+    "uk": "səkˈses.fəl",
+    "us": "səkˈses.fəl",
+    "source": "https://dictionary.cambridge.org/dictionary/english/successful",
+    "checked": "2026-10-09"
+  },
+  "essential": {
+    "uk": "ɪˈsen.ʃəl",
+    "us": "ɪˈsen.ʃəl",
+    "source": "https://dictionary.cambridge.org/dictionary/english/essential",
+    "checked": "2026-10-09"
+  },
+  "impact": {
+    "uk": "ˈɪm.pækt",
+    "us": "ˈɪm.pækt",
+    "source": "https://dictionary.cambridge.org/dictionary/english/impact",
+    "checked": "2026-10-09"
+  },
+  "approve": {
+    "uk": "əˈpruːv",
+    "us": "əˈpruːv",
+    "source": "https://dictionary.cambridge.org/dictionary/english/approve",
+    "checked": "2026-10-09"
+  },
+  "sample": {
+    "uk": "ˈsɑːm.pəl",
+    "us": "ˈsæm.pəl",
+    "source": "https://dictionary.cambridge.org/dictionary/english/sample",
+    "checked": "2026-10-09"
+  },
+  "range": {
+    "uk": "reɪndʒ",
+    "us": "reɪndʒ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/range",
+    "checked": "2026-10-09"
+  },
+  "workflow": {
+    "uk": "ˈwɜːk.fləʊ",
+    "us": "ˈwɝːk.floʊ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/workflow",
+    "checked": "2026-10-09"
+  },
+  "responsible": {
+    "uk": "rɪˈspɒn.sə.bəl",
+    "us": "rɪˈspɑːn.sə.bəl",
+    "source": "https://dictionary.cambridge.org/dictionary/english/responsible",
+    "checked": "2026-10-09"
+  },
+  "coordinate": {
+    "uk": "kəʊˈɔː.dɪ.neɪt",
+    "us": "koʊˈɔːr.dən.eɪt",
+    "source": "https://dictionary.cambridge.org/dictionary/english/coordinate",
+    "checked": "2026-10-09"
+  },
+  "challenge": {
+    "uk": "ˈtʃæl.ɪndʒ",
+    "us": "ˈtʃæl.ɪndʒ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/challenge",
+    "checked": "2026-10-09"
+  },
+  "rollout": {
+    "uk": "ˈrəʊlˌaʊt",
+    "us": "ˈroʊlˌaʊt",
+    "source": "https://dictionary.cambridge.org/dictionary/english/rollout",
+    "checked": "2026-10-09"
+  },
+  "speed": {
+    "uk": "spiːd",
+    "us": "spiːd",
+    "source": "https://dictionary.cambridge.org/dictionary/english/speed",
+    "checked": "2026-10-09"
+  },
+  "step": {
+    "uk": "step",
+    "us": "step",
+    "source": "https://dictionary.cambridge.org/dictionary/english/step",
+    "checked": "2026-10-09"
   }
 };

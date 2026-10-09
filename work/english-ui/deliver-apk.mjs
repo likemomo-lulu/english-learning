@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 import { transform } from 'esbuild';
 import { chapters, getLesson } from './src/data.js';
+import { bundledRevision, contentVersion, contentBaseUrl } from './src/content-format.js';
 
 // Deliver only the APK whose embedded page exactly matches the reviewed build.
 const buildRoot = new URL('./android/app/build/outputs/apk/debug/', import.meta.url);
@@ -15,7 +16,9 @@ assert.equal(config.appId, metadata.applicationId);
 assert(!config.server?.url, 'APK must not depend on an external development server');
 const embedded = execFileSync('unzip', ['-p', apk.pathname, 'assets/public/index.html'], { encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
 assert.equal(embedded, await readFile(new URL('./dist/index.html', import.meta.url), 'utf8'));
-assert.equal(chapters.length, 37);
+assert.equal(chapters.length, 54);
+assert(embedded.includes(contentBaseUrl), 'Content update endpoint missing from APK');
+assert(embedded.includes(String(bundledRevision)), 'Bundled content revision missing from APK');
 // Derive delivery counts from the same registry that supplies the bundled page.
 const chapterCounts = {
   daily: chapters.filter(chapter => chapter.id.startsWith('D')).length,
@@ -47,6 +50,7 @@ await writeFile(new URL('android-build-info.json', output), JSON.stringify({
   minimumAndroidApi: metadata.minSdkVersionForDexing,
   builtAt: new Date().toISOString(), bytes: contents.length, sha256,
   chapters: chapterCounts, quickReferenceEntries,
+  contentVersion, contentRevision: bundledRevision, contentUpdateUrl: `${contentBaseUrl}manifest.json`,
   bundledPageMatchesBuild: true, externalDevelopmentServer: false,
   previousNativeRuntimeValidation: { versionName: '0.2.0', androidApi: 32, offlineOnEmulator: true },
   testedOnEmulatorThisVersion: false, testedOnUserPhone: false,

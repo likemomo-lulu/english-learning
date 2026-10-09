@@ -6,6 +6,8 @@ import { chapters } from './src/data.js';
 const execute = promisify(execFile);
 // Follow the current catalog when checking the installed APK's category counts.
 const dailyCount = chapters.filter(chapter => chapter.id.startsWith('D')).length;
+const travelCount = chapters.filter(chapter => chapter.id.startsWith('T')).length;
+const workCount = chapters.filter(chapter => chapter.id.startsWith('W')).length;
 // Attach to the installed APK's WebView; do not navigate to the desktop preview.
 async function run(...args) {
   const { stdout } = await execute('agent-browser', ['--session', 'english-android', ...args], { maxBuffer: 2 * 1024 * 1024 });
@@ -50,7 +52,7 @@ await run('wait', '--fn', "document.querySelector('.player-title').textContent =
 await snapshot();
 await run('click', '[aria-label="返回章节"]');
 await snapshot();
-for (const [name, count] of [['日常', dailyCount], ['旅行', 6], ['职场', 8], ['全部', chapters.length]]) {
+for (const [name, count] of [['日常', dailyCount], ['旅行', travelCount], ['职场', workCount], ['全部', chapters.length]]) {
   await run('find', 'role', 'button', 'click', '--name', name, '--exact');
   await snapshot();
   assert.equal(await read(() => document.querySelectorAll('.chapter-card').length), count);
@@ -61,4 +63,4 @@ await run('wait', '--fn', "Boolean(document.querySelector('[aria-label=\"英语�
 await snapshot();
 const offlineVoices = await read(() => [...document.querySelector('[aria-label="英语音色"]').options].filter(o => o.textContent.includes('离线')).length);
 assert(offlineVoices > 0, 'This emulator must have an offline voice for the offline speech check');
-console.log(`Passed installed APK: Android native platform, local bundled origin, persisted bookmarked state, direct notes, no horizontal overflow, rapid speech switch and completion, continuous advancement, pause/resume, categories ${dailyCount}/6/8/${chapters.length}, ${offlineVoices} available offline English voices. Audio quality not assessed.`);
+console.log(`Passed installed APK: Android native platform, local bundled origin, persisted bookmarked state, direct notes, no horizontal overflow, rapid speech switch and completion, continuous advancement, pause/resume, categories ${dailyCount}/${travelCount}/${workCount}/${chapters.length}, ${offlineVoices} available offline English voices. Audio quality not assessed.`);

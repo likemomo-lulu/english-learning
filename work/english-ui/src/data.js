@@ -6,8 +6,12 @@ import { workChapters, workplaceLessons } from './workplace.js';
 import { serviceChapters, serviceLessons } from './daily-services.js';
 import { lessonSupplements } from './lesson-supplements.js';
 import { buildQuickReference } from './quick-reference.js';
+import { expandedDailyChapters, expandedDailyLessons } from './daily-expansion.js';
+import { expandedTravelChapters, expandedTravelLessons } from './travel-expansion.js';
+import { expandedWorkChapters, expandedWorkLessons } from './workplace-expansion.js';
+import { culturalChapters, culturalLessons } from './cultural-scenes.js';
 
-// All 37 chapters have complete text drafts; audio and native-speaker review are separate stages.
+// All 54 chapters have complete text drafts; audio and native-speaker review are separate stages.
 export const chapters = [
   ['D01', '买咖啡和奶茶', 'Ordering a drink', 'Coffee', '购物与饮食', '选择口味 · 调整订单', 'Could you make it a little less sweet?', '能少放一点糖吗？'],
   ['D02', '超市找东西', 'At the supermarket', 'ShoppingBasket', '购物与饮食', '找商品 · 接受替代 · 核对价格', 'Do you happen to know where the oat milk is?', '你知道燕麦奶在哪儿吗？'],
@@ -28,13 +32,17 @@ export const chapters = [
   ['D17', '书店找书和推荐', 'Something to read', 'BookOpen', '出行与社交', '找书 · 接受推荐 · 随便看看', "I'm looking for something light to read.", '我想找点轻松的读物。'],
   ['D18', '约朋友和自然接话', 'Making plans', 'MessagesSquare', '出行与社交', '邀约 · 改期 · 礼貌拒绝', 'Could we make it a bit later?', '我们能约晚一点吗？'],
   ...serviceChapters,
+  ...expandedDailyChapters,
+  ...culturalChapters,
   ['T01', '机场值机和行李', 'At the airport', 'Plane', '旅行补充', '托运 · 确认登机信息', 'Can I take this bag on board?', '这个包可以带上飞机吗？'],
   ['T02', '机上请求和中转', 'On board & in transit', 'Luggage', '旅行补充', '请求用品 · 询问中转', 'Will I have enough time to make my connection?', '我有足够时间赶上转机吗？'],
   ['T03', '酒店入住和房间问题', 'Checking in', 'BedDouble', '旅行补充', '核对预订 · 说明房间问题', "The air conditioning doesn't seem to be working.", '空调好像不工作了。'],
   ['T04', '餐厅预约、点餐和结账', 'Eating out', 'Utensils', '旅行补充', '等位 · 点餐 · 说明过敏', 'Does this contain any nuts? I have a nut allergy.', '这里面有坚果吗？我对坚果过敏。'],
   ['T05', '打车、问路和目的地', 'Finding your way', 'CarFront', '旅行补充', '确认上车点 · 说清下车位置', 'Could you drop me off at the main entrance?', '能让我在正门下车吗？'],
   ['T06', '丢东西和求助', 'When things go wrong', 'LifeBuoy', '旅行补充', '描述物品 · 解释问题 · 求助', 'I think I left my phone in the taxi.', '我想我把手机落在出租车里了。'],
+  ...expandedTravelChapters,
   ...workChapters,
+  ...expandedWorkChapters,
 ].map(([id, title, english, icon, group, task, example, translation]) => ({
   id, title, english, icon, group, task, example, translation,
   ready: true, sample: false,
@@ -76,6 +84,8 @@ const line = (en, zh, role) => [en, zh, role, '日常对话'];
 
 export const lessons = {
   ...shoppingLessons, ...homeLessons, ...outingLessons, ...travelLessons, ...workplaceLessons, ...serviceLessons,
+  ...expandedDailyLessons, ...expandedTravelLessons, ...expandedWorkLessons,
+  ...culturalLessons,
   D01: {
     scenario: '你想买一杯带走的冰拿铁，换成燕麦奶。店里缺了一种原料，你需要选择替代品。',
     lines: makeLines('D01', coffee),

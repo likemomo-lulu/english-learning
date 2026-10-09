@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "materials": "node export-materials.mjs",
-    "build": "node patch-tts.mjs && node export-materials.mjs && node build.mjs",
+    "build": "node patch-tts.mjs && node export-materials.mjs && node export-content.mjs && node build.mjs",
     "postinstall": "node patch-tts.mjs",
     "android:sync": "npm run build && cap sync android"
   },

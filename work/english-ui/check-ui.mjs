@@ -8,6 +8,8 @@ const prefix = ['--session', 'english-ui'];
 const output = new URL('../../outputs/english-app-ui/', import.meta.url).pathname;
 // Expected catalog counts follow the same complete manuscript registry as the application.
 const dailyCount = chapters.filter(chapter => chapter.id.startsWith('D')).length;
+const travelCount = chapters.filter(chapter => chapter.id.startsWith('T')).length;
+const workCount = chapters.filter(chapter => chapter.id.startsWith('W')).length;
 async function run(...args) {
   const { stdout } = await execute('agent-browser', [...prefix, ...args], { maxBuffer: 4 * 1024 * 1024 });
   return stdout.trim();
@@ -58,10 +60,10 @@ await run('click', '.bottom-nav .nav-item:first-child');
 await snapshot();
 await run('find', 'role', 'button', 'click', '--name', '旅行', '--exact');
 await snapshot();
-assert.equal(await read(() => document.querySelectorAll('.chapter-card').length), 6);
+assert.equal(await read(() => document.querySelectorAll('.chapter-card').length), travelCount);
 await run('find', 'role', 'button', 'click', '--name', '职场', '--exact');
 await snapshot();
-assert.equal(await read(() => document.querySelectorAll('.chapter-card').length), 8);
+assert.equal(await read(() => document.querySelectorAll('.chapter-card').length), workCount);
 await run('fill', '[aria-label="搜索章节"]', '优先级');
 await snapshot();
 assert.equal(await read(() => document.querySelectorAll('.chapter-card').length), 1);
@@ -188,5 +190,5 @@ await run('set', 'viewport', '1280', '900');
 await run('screenshot', `${output}chapters-desktop.png`);
 const errors = await run('errors');
 assert(!errors || /No errors/i.test(errors), errors);
-console.log(`Passed: chapter filters (${dailyCount}/6/8/${chapters.length}), workplace search and lessons, search and empty state, Chinese toggle, direct expression notes, two inline tools, favorites persistence, removed learned controls/statistics, compact resume module without examples, font sizing, and layout at 320/360/390/412/768/1280px.`);
+console.log(`Passed: chapter filters (${dailyCount}/${travelCount}/${workCount}/${chapters.length}), workplace search and lessons, search and empty state, Chinese toggle, direct expression notes, two inline tools, favorites persistence, removed learned controls/statistics, compact resume module without examples, font sizing, and layout at 320/360/390/412/768/1280px.`);
 console.log('Browser page errors: none. Screenshots saved. Speech audio quality and Android runtime not verified.');
