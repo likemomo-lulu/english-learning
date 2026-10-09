@@ -54,11 +54,11 @@ Windows 使用 `gradlew.bat`。安卓构建产物位于 `android/app/build/outpu
 
 ## 教材内容更新
 
-App 启动时自动检查更新，也可在“我的 -> 教材内容 -> 检查内容更新”手动检查。更新源为本仓库 `main` 分支的 `content/manifest.json`，通过 GitHub Raw 的 HTTPS 地址下载。旧版 0.2.2 及更早版本需先覆盖安装一次 0.3.0。
+App 启动时自动检查更新，也可在“我的 -> 教材内容 -> 检查内容更新”手动检查。更新源为本仓库 `main` 分支的 `content/manifest.json`，优先通过 GitHub Raw 的 HTTPS 地址下载；网络或服务错误时自动尝试 jsDelivr 上同一 GitHub 仓库的内容。两个通道执行相同校验，不因教材校验或保存失败而切换。旧版 0.2.2 及更早版本需先覆盖安装一次 0.3.0。
 
 内置教材和下载教材使用同一数据格式。下载前检查版本和阅读器兼容性，下载后校验大小、SHA-256、完整字段以及原有章节与句子编号；全部通过后才一次性保存到本地。断网、下载中断或保存失败时继续使用原内容。收藏和设置独立保存，下载不会覆盖记录。教材仅包含 JSON 数据，不下发 JavaScript 或原生功能。
 
-更新材料时，在 `src/content-format.js` 中增大 `bundledRevision`（单调递增整数），同时调整 `contentVersion`；保持原句编号，不删除已发布章节或句子。执行 `npm run build` 和 `node check-content.mjs` 后，发布新生成的 `content/pack-<revision>.json` 及 `content/manifest.json` 到 GitHub。已发布的编号不可改写；修改内容必须使用新编号。旧内容包应保留。App 下载超时为 30 秒，内容包上限 4 MB；超出本地存储容量会提示失败并保留原教材。
+更新材料时，在 `src/content-format.js` 中增大 `bundledRevision`（单调递增整数），同时调整 `contentVersion`；保持原句编号，不删除已发布章节或句子。执行 `npm run build` 和 `node check-content.mjs` 后，发布新生成的 `content/pack-<revision>.json` 及 `content/manifest.json` 到 GitHub。已发布的编号不可改写；修改内容必须使用新编号。旧内容包应保留。清单每个通道连接超时为 8 秒，整个更新超时为 30 秒，内容包上限 4 MB；超出本地存储容量会提示失败并保留原教材。备用 CDN 缓存刷新可能晚于 GitHub，稍后再检查可获得新的版本。
 
 内容更新可新增或修订教材；新页面交互、原生插件和权限仍需要新版 APK。GitHub 的网络可达性取决于设备网络，不能连接时可重试，离线阅读不受影响。
 

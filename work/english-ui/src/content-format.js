@@ -3,6 +3,7 @@ export const readerVersion = 1;
 export const bundledRevision = 2026100901;
 export const contentVersion = '0.5';
 export const contentBaseUrl = 'https://raw.githubusercontent.com/likemomo-lulu/english-learning/main/content/';
+export const contentSources = [contentBaseUrl, 'https://cdn.jsdelivr.net/gh/likemomo-lulu/english-learning@main/content/'];
 export const maxContentBytes = 4 * 1024 * 1024;
 
 const nonempty = value => typeof value === 'string' && value.trim().length > 0 && value.length <= 20000;

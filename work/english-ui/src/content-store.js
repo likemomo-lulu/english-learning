@@ -1,4 +1,4 @@
-import { contentBaseUrl, maxContentBytes, validateContent, validateManifest } from './content-format.js';
+import { contentBaseUrl, contentSources, maxContentBytes, validateContent, validateManifest } from './content-format.js';
 
 const cacheKey = 'scene-english-content-v1';
 
@@ -18,7 +18,11 @@ export function loadContent(bundled, storage = localStorage) {
 
 // Limit response size even when the server omits Content-Length; cancel oversized downloads.
 async function readLimited(response, limit) {
-  if (!response.ok) throw new Error(`更新服务暂不可用（HTTP ${response.status}），请稍后重试。`);
+  if (!response.ok) {
+    const error = new Error(`更新服务暂不可用（HTTP ${response.status}），请稍后重试。`);
+    error.retryable = response.status === 404 || response.status === 429 || response.status >= 500;
+    throw error;
+  }
   if (Number(response.headers.get('content-length')) > limit) throw new Error('内容包超过大小限制。');
   const reader = response.body.getReader();
   const chunks = [];
@@ -39,7 +43,7 @@ async function readLimited(response, limit) {
 }
 
 // HTTPS origin, SHA-256, schema and legacy IDs must all pass before activating an update.
-export async function downloadContent(current, { fetcher = fetch, storage = localStorage, cryptoApi = crypto, signal, baseUrl = contentBaseUrl, onPhase = () => {} } = {}) {
+async function downloadFromSource(current, { fetcher = fetch, storage = localStorage, cryptoApi = crypto, signal, baseUrl = contentBaseUrl, onPhase = () => {} } = {}) {
   onPhase('checking');
   const manifestBytes = await readLimited(await fetcher(`${baseUrl}manifest.json?check=${Date.now()}`, { cache: 'no-store', signal }), 16384);
   const manifest = validateManifest(JSON.parse(new TextDecoder().decode(manifestBytes)));
@@ -56,4 +60,32 @@ export async function downloadContent(current, { fetcher = fetch, storage = loca
   try { storage.setItem(cacheKey, raw); }
   catch (error) { console.error('Cannot persist downloaded content:', error); throw new Error('内容保存失败，请检查可用空间；已保留原教材。'); }
   return { content, updated: true };
+}
+
+// Fail over only for connection/service errors, keeping schema, integrity and storage failures visible.
+export async function downloadContent(current, options = {}) {
+  const sources = options.baseUrl ? [options.baseUrl] : options.sources || contentSources;
+  for (const [index, baseUrl] of sources.entries()) {
+    options.signal?.throwIfAborted();
+    const controller = new AbortController();
+    const abort = () => controller.abort();
+    options.signal?.addEventListener('abort', abort, { once: true });
+    const timeout = setTimeout(abort, 8000);
+    try {
+      return await downloadFromSource(current, {
+        ...options, baseUrl, signal: controller.signal,
+        onPhase: phase => {
+          // Once the manifest is reachable, allow the App's full timeout to finish the larger pack.
+          if (phase === 'downloading') clearTimeout(timeout);
+          options.onPhase?.(phase);
+        },
+      });
+    } catch (error) {
+      if (options.signal?.aborted || index === sources.length - 1 || !(error.name === 'AbortError' || error instanceof TypeError || error.retryable)) throw error;
+      console.warn('Content source unavailable; trying the alternate GitHub content source:', error);
+    } finally {
+      clearTimeout(timeout);
+      options.signal?.removeEventListener('abort', abort);
+    }
+  }
 }

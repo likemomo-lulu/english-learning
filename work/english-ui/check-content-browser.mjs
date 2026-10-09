@@ -4,7 +4,7 @@ import { createServer } from 'node:http';
 import { createHash } from 'node:crypto';
 import { createInterface } from 'node:readline';
 import { bundledContent } from './src/bundled-content.js';
-import { contentBaseUrl, validateContent } from './src/content-format.js';
+import { contentBaseUrl, contentSources, validateContent } from './src/content-format.js';
 
 // This isolated preview substitutes only the update endpoint; no fixture enters an APK or GitHub.
 const origin = 'http://127.0.0.1:4179';
@@ -13,7 +13,7 @@ const result = await build({
   define: { 'process.env.NODE_ENV': '"production"' },
   plugins: [{ name: 'local-update-fixture', setup(builder) {
     builder.onLoad({ filter: /content-format\.js$/ }, async args => ({
-      contents: (await readFile(args.path, 'utf8')).replace(contentBaseUrl, `${origin}/content/`), loader: 'js',
+      contents: (await readFile(args.path, 'utf8')).replace(contentBaseUrl, `${origin}/content/`).replace(contentSources[1], `${origin}/content/`), loader: 'js',
     }));
   } }],
 });

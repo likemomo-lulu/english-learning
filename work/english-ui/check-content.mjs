@@ -35,9 +35,9 @@ const fallback = loadContent(bundledContent, storage({ 'scene-english-content-v1
 assert.equal(fallback.content.revision, bundledContent.revision);
 const offline = async () => { throw new TypeError('offline'); };
 const snapshot = saved.getItem('scene-english-content-v1');
-await assert.rejects(() => downloadContent(current, { fetcher: offline, storage: saved }), /offline/);
+await assert.rejects(() => downloadContent(current, { fetcher: offline, storage: saved, baseUrl: 'https://example.test/' }), /offline/);
 assert.equal(saved.getItem('scene-english-content-v1'), snapshot);
-await assert.rejects(() => downloadContent(current, { fetcher: async () => response('', 503), storage: saved }), /HTTP 503/);
+await assert.rejects(() => downloadContent(current, { fetcher: async () => response('', 503), storage: saved, baseUrl: 'https://example.test/' }), /HTTP 503/);
 await assert.rejects(() => downloadContent(current, { fetcher, storage: { setItem() { throw new Error('quota'); } }, cryptoApi: webcrypto, baseUrl: 'https://example.test/' }), /内容保存失败/);
 assert.throws(() => validateManifest({ ...manifest, minReaderVersion: 2 }), /新版 App/);
 assert.throws(() => validateManifest({ ...manifest, file: 'https://example.test/script.js' }), /下载地址/);
@@ -54,4 +54,15 @@ await assert.rejects(() => downloadContent(current, { fetcher, storage: saved, c
 assert.equal(saved.getItem('scene-english-content-v1'), snapshot);
 const newer = { ...pack, revision: pack.revision + 1 };
 assert.equal(loadContent(bundledContent, storage({ 'scene-english-content-v1': JSON.stringify(newer) })).content.revision, newer.revision);
+const fallbackResult = await downloadContent(current, {
+  sources: ['https://primary.test/', 'https://alternate.test/'], storage: storage(), cryptoApi: webcrypto,
+  fetcher: async url => url.startsWith('https://primary.test/') ? response('', 503) : fetcher(url),
+});
+assert.equal(fallbackResult.updated, true);
+let requests = 0;
+await assert.rejects(() => downloadContent(current, {
+  sources: ['https://primary.test/', 'https://alternate.test/'], storage: storage(), cryptoApi: webcrypto,
+  fetcher: async url => { requests++; return url.includes('manifest') ? response(JSON.stringify(manifest)) : response('corrupt'); },
+}), /完整性校验失败/);
+assert.equal(requests, 2, 'Corrupt content must not be hidden by retrying another source');
 console.log('Passed content checks: update, no-op/downgrade, offline cache, corrupted cache, HTTP/network errors, quota failure, hash/size tampering, incompatible reader, fixed paths, preserved IDs, duplicate IDs and cancellation.');
