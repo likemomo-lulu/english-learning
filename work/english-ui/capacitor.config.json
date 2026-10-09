@@ -1,0 +1,7 @@
+{
+  "appId": "com.cass.sceneenglish",
+  "appName": "日常英语",
+  "webDir": "dist",
+  "android": { "allowMixedContent": false, "backgroundColor": "#ffffff" },
+  "plugins": { "SystemBars": { "insetsHandling": "native", "style": "LIGHT" } }
+}

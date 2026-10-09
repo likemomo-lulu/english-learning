@@ -1,0 +1,2 @@
+# Preserve the Windows Gradle wrapper's native line endings.
+*.bat text eol=crlf whitespace=cr-at-eol

@@ -1,0 +1,26 @@
+# Dependencies, build output, and local tooling.
+node_modules/
+dist/
+.DS_Store
+__pycache__/
+*.pyc
+*.log
+.idea/
+.kotlin/
+*.jks
+*.keystore
+.env
+.env.*
+!.env.example
+
+# Only the application project belongs in the work directory.
+/work/*
+!/work/english-ui/
+
+# Preserve hand-maintained documentation; regenerate the other outputs.
+/outputs/*
+!/outputs/scene-english-learning-plan.md
+!/outputs/android-install-guide.md
+!/outputs/english-app-ui/
+/outputs/english-app-ui/*
+!/outputs/english-app-ui/README.md
