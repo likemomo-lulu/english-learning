@@ -2,9 +2,9 @@
   "format": "scene-english-manifest",
   "schemaVersion": 1,
   "minReaderVersion": 1,
-  "revision": 2026100901,
-  "version": "0.5",
-  "file": "pack-2026100901.json",
-  "bytes": 605375,
-  "sha256": "e70acbdc1bc73d8e79b5af1a4dd13a4fe3aa579cd0729d11ed801eab1fcb5ef8"
+  "revision": 2026101001,
+  "version": "0.6",
+  "file": "pack-2026101001.json",
+  "bytes": 617742,
+  "sha256": "e07b7531b49bc17ca0c851e3b816a695490600720241c90a5cd39e3863ded597"
 }

@@ -1,5 +1,13 @@
 // Rows follow the existing reference contract; examples always link to this chapter's sentences.
 export const expandedQuickReferenceContent = {
+  D35: [
+    ['library card', '借书卡', 'card', '用于图书馆借阅；办卡材料和资格按实际图书馆要求核实。', 'library card'],
+    ['due date', '应归还日期', 'date', '借阅的截止日期，不是任意一次归还的日期；可在凭条或账户中核对。', 'due date'],
+    ['renew a loan', '续借', 'renew', 'loan 这里指借阅；续借可能因预约或规则限制而不获准。', 'renew this loan'],
+    ['place a hold', '预约借阅', 'available', '例句中的 available 表示已有可供借阅的书；预约本身不保证立即能取。', 'when it is available'],
+    ['return box', '还书箱', 'return', '闭馆时是否可用、接收哪些物品和何时入账应问工作人员。', 'return box'],
+    ['overdue fees', '逾期费用', 'fee', 'fee 是费用，复数 fees；图书馆是否收费及金额并不统一。', 'overdue fees'],
+  ],
   D33: [
     ['family reunion', '家庭团聚', 'reunion', 'reunion 表示重新聚在一起，不是每次 meeting 都叫 reunion；本章指节日团聚。', 'family reunions'],
     ['lunar month', '阴历月份', 'lunar', '中国农历是阴阳合历；农历月份的日期不直接对应公历一月或八月。', 'first lunar month'],

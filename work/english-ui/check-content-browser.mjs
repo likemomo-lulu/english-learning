@@ -23,9 +23,11 @@ const fixture = structuredClone(bundledContent);
 fixture.revision += 1;
 fixture.version = '0.5-test';
 const extra = structuredClone(fixture.chapters.find(ch => ch.id === 'D32'));
+// Choose the next daily ID so the fixture stays separate from newly published chapters.
+const fixtureChapterId = `D${Math.max(...fixture.chapters.filter(ch => ch.id.startsWith('D')).map(ch => Number(ch.id.slice(1)))) + 1}`;
 function remap(value) {
   if (Array.isArray(value)) return value.map(remap);
-  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, ['id', 'chapterId', 'exampleId'].includes(key) ? item.replace(/^D32/, 'D35') : remap(item)]));
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, ['id', 'chapterId', 'exampleId'].includes(key) ? item.replace(/^D32/, fixtureChapterId) : remap(item)]));
   return value;
 }
 const chapter = remap(extra);
