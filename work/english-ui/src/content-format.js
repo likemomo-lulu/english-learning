@@ -1,7 +1,7 @@
 // Increment the reader version only when a content schema requires a new APK.
 export const readerVersion = 1;
-export const bundledRevision = 2026101001;
-export const contentVersion = '0.6';
+export const bundledRevision = 2026101002;
+export const contentVersion = '0.7';
 export const contentBaseUrl = 'https://raw.githubusercontent.com/likemomo-lulu/english-learning/main/content/';
 export const contentSources = [contentBaseUrl, 'https://cdn.jsdelivr.net/gh/likemomo-lulu/english-learning@main/content/'];
 export const maxContentBytes = 4 * 1024 * 1024;

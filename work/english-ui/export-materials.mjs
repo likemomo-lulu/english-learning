@@ -8,8 +8,8 @@ const output = new URL('../../outputs/english-manuscripts/', import.meta.url);
 const ids = new Set();
 const englishTexts = new Set();
 const totals = { chapters: chapters.length, core: 0, dialogues: 0, branches: 0, sentenceEntries: 0, notes: 0, substitutions: 0, responses: 0, tasks: 0, quickReferenceEntries: 0 };
-assert.equal(chapters.length, 55);
-for (const [prefix, count] of [['D', 35], ['T', 9], ['W', 11]]) {
+assert.equal(chapters.length, 67);
+for (const [prefix, count] of [['D', 45], ['T', 9], ['W', 13]]) {
   assert.equal(chapters.filter(ch => ch.id.startsWith(prefix)).length, count);
 }
 assert.equal(new Set(chapters.map(ch => ch.id)).size, chapters.length);
@@ -79,7 +79,7 @@ for (const chapter of chapters) {
 }
 totals.distinctSentenceTexts = englishTexts.size;
 
-const sourceNote = '原有日常与旅行部分参考联普英语社区、了不起的 Marianne 的场景选题方式，具体核实范围和链接见《学习材料规划》。D19–D23 生活服务章节及此前补充对话，也参考用户提供的《生活英语讲义》的主题与表达，经校对、改写和扩展；不代表已核实原视频台词。职场篇及本次新增 D24–D35、T07–T09 为原创情境练习。';
+const sourceNote = '原有日常与旅行部分参考联普英语社区、了不起的 Marianne 的场景选题方式，具体核实范围和链接见《学习材料规划》。D19–D23 生活服务章节及此前补充对话，也参考用户提供的《生活英语讲义》的主题与表达，经校对、改写和扩展；不代表已核实原视频台词。职场篇及本次新增 D24–D45、T07–T09、W09–W13 为原创情境练习。';
 const groupCounts = [['D', '日常'], ['T', '旅行'], ['W', '职场']].map(([prefix, label]) => `${label} ${chapters.filter(ch => ch.id.startsWith(prefix)).length}`).join('、');
 const introduction = `版本：2026-10-10 · 完整文字初稿 v${contentVersion}\n\n面向能基本交流、希望表达更自然的自学者；纯文字，无图片。共 ${totals.chapters} 章：${groupCounts}。\n\n每章含场景说明、至少 6 个词组、12 条核心句、至少 3 条核心句表达笔记、至少 2 段完整对话、至少 2 个变化分支、3 个替换练习、3 个回应练习和 1 个自由任务。每章新增独立的语句速查，含 6 个词语或表达、关键词英美音标、易错点及本章例句；不向原有句旁笔记追加音标或速查内容。练习参考不是唯一答案。\n\n${sourceNote}\n\n音标逐关键词核对剑桥词典，表示关键词的单独读音，不是整句连读音标；名词 refund、estimate、update 按名词读音标注。文字初稿已做内容自查和结构校验，尚未做母语者审校。当前 App 通过系统文字转语音点读，文稿没有独立录音音轨；实际口音由设备音色决定。金额、地名、政策和流程属于虚构练习设定，现实使用时向服务方或公司核实。\n`;
 const cell = text => text.replaceAll('|', '\\|').replaceAll('\n', ' ');

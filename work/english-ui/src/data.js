@@ -11,8 +11,9 @@ import { expandedTravelChapters, expandedTravelLessons } from './travel-expansio
 import { expandedWorkChapters, expandedWorkLessons } from './workplace-expansion.js';
 import { culturalChapters, culturalLessons } from './cultural-scenes.js';
 import { libraryChapters, libraryLessons } from './library-scene.js';
+import { practicalDailyChapters, practicalWorkChapters, practicalLessons } from './practical-scenes.js';
 
-// All 55 chapters have complete text drafts; audio and native-speaker review are separate stages.
+// All 67 chapters have complete text drafts; audio and native-speaker review are separate stages.
 export const chapters = [
   ['D01', '买咖啡和奶茶', 'Ordering a drink', 'Coffee', '购物与饮食', '选择口味 · 调整订单', 'Could you make it a little less sweet?', '能少放一点糖吗？'],
   ['D02', '超市找东西', 'At the supermarket', 'ShoppingBasket', '购物与饮食', '找商品 · 接受替代 · 核对价格', 'Do you happen to know where the oat milk is?', '你知道燕麦奶在哪儿吗？'],
@@ -36,6 +37,7 @@ export const chapters = [
   ...expandedDailyChapters,
   ...culturalChapters,
   ...libraryChapters,
+  ...practicalDailyChapters,
   ['T01', '机场值机和行李', 'At the airport', 'Plane', '旅行补充', '托运 · 确认登机信息', 'Can I take this bag on board?', '这个包可以带上飞机吗？'],
   ['T02', '机上请求和中转', 'On board & in transit', 'Luggage', '旅行补充', '请求用品 · 询问中转', 'Will I have enough time to make my connection?', '我有足够时间赶上转机吗？'],
   ['T03', '酒店入住和房间问题', 'Checking in', 'BedDouble', '旅行补充', '核对预订 · 说明房间问题', "The air conditioning doesn't seem to be working.", '空调好像不工作了。'],
@@ -45,6 +47,7 @@ export const chapters = [
   ...expandedTravelChapters,
   ...workChapters,
   ...expandedWorkChapters,
+  ...practicalWorkChapters,
 ].map(([id, title, english, icon, group, task, example, translation]) => ({
   id, title, english, icon, group, task, example, translation,
   ready: true, sample: false,
@@ -89,6 +92,7 @@ export const lessons = {
   ...expandedDailyLessons, ...expandedTravelLessons, ...expandedWorkLessons,
   ...culturalLessons,
   ...libraryLessons,
+  ...practicalLessons,
   D01: {
     scenario: '你想买一杯带走的冰拿铁，换成燕麦奶。店里缺了一种原料，你需要选择替代品。',
     lines: makeLines('D01', coffee),

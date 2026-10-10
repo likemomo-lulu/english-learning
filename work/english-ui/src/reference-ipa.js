@@ -1,4 +1,4 @@
-// Cambridge keyword IPA checked on 2026-10-09; keep regional labels with the readings.
+// Cambridge keyword IPA checked on each entry's date; keep regional labels with the readings.
 export const keywordIPA = {
   "latte": {
     "uk": "ˈlæt.eɪ",
@@ -1703,5 +1703,155 @@ export const keywordIPA = {
     "us": "step",
     "source": "https://dictionary.cambridge.org/dictionary/english/step",
     "checked": "2026-10-09"
+  },
+  "treatment": {
+    "uk": "ˈtriːt.mənt",
+    "us": "ˈtriːt.mənt",
+    "source": "https://dictionary.cambridge.org/dictionary/english/treatment",
+    "checked": "2026-10-10"
+  },
+  "cold": {
+    "uk": "kəʊld",
+    "us": "koʊld",
+    "source": "https://dictionary.cambridge.org/dictionary/english/cold",
+    "checked": "2026-10-10"
+  },
+  "flight": {
+    "uk": "flaɪt",
+    "us": "flaɪt",
+    "source": "https://dictionary.cambridge.org/dictionary/english/flight",
+    "checked": "2026-10-10"
+  },
+  "open": {
+    "uk": "ˈəʊ.pən",
+    "us": "ˈoʊ.pən",
+    "source": "https://dictionary.cambridge.org/dictionary/english/open",
+    "checked": "2026-10-10"
+  },
+  "limit": {
+    "uk": "ˈlɪm.ɪt",
+    "us": "ˈlɪm.ɪt",
+    "source": "https://dictionary.cambridge.org/dictionary/english/limit",
+    "checked": "2026-10-10"
+  },
+  "reverse": {
+    "uk": "rɪˈvɜːs",
+    "us": "rɪˈvɝːs",
+    "source": "https://dictionary.cambridge.org/dictionary/english/reverse",
+    "checked": "2026-10-10"
+  },
+  "assistance": {
+    "uk": "əˈsɪs.təns",
+    "us": "əˈsɪs.təns",
+    "source": "https://dictionary.cambridge.org/dictionary/english/assistance",
+    "checked": "2026-10-10"
+  },
+  "service": {
+    "uk": "ˈsɜː.vɪs",
+    "us": "ˈsɝː.vɪs",
+    "source": "https://dictionary.cambridge.org/dictionary/english/service",
+    "checked": "2026-10-10"
+  },
+  "option": {
+    "uk": "ˈɒp.ʃən",
+    "us": "ˈɑːp.ʃən",
+    "source": "https://dictionary.cambridge.org/dictionary/english/option",
+    "checked": "2026-10-10"
+  },
+  "responsibility": {
+    "uk": "rɪˌspɒn.sɪˈbɪl.ə.ti",
+    "us": "rɪˌspɑːn.səˈbɪl.ə.t̬i",
+    "source": "https://dictionary.cambridge.org/dictionary/english/responsibility",
+    "checked": "2026-10-10"
+  },
+  "meet": {
+    "uk": "miːt",
+    "us": "miːt",
+    "source": "https://dictionary.cambridge.org/dictionary/english/meet",
+    "checked": "2026-10-10"
+  },
+  "space": {
+    "uk": "speɪs",
+    "us": "speɪs",
+    "source": "https://dictionary.cambridge.org/dictionary/english/space",
+    "checked": "2026-10-10"
+  },
+  "share": {
+    "uk": "ʃeər",
+    "us": "ʃer",
+    "source": "https://dictionary.cambridge.org/dictionary/english/share",
+    "checked": "2026-10-10"
+  },
+  "lend": {
+    "uk": "lend",
+    "us": "lend",
+    "source": "https://dictionary.cambridge.org/dictionary/english/lend",
+    "checked": "2026-10-10"
+  },
+  "pace": {
+    "uk": "peɪs",
+    "us": "peɪs",
+    "source": "https://dictionary.cambridge.org/dictionary/english/pace",
+    "checked": "2026-10-10"
+  },
+  "hour": {
+    "uk": "aʊər",
+    "us": "aʊr",
+    "source": "https://dictionary.cambridge.org/dictionary/english/hour",
+    "checked": "2026-10-10"
+  },
+  "strong": {
+    "uk": "strɒŋ",
+    "us": "strɑːŋ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/strong",
+    "checked": "2026-10-10"
+  },
+  "sip": {
+    "uk": "sɪp",
+    "us": "sɪp",
+    "source": "https://dictionary.cambridge.org/dictionary/english/sip",
+    "checked": "2026-10-10"
+  },
+  "caffeine": {
+    "uk": "ˈkæf.iːn",
+    "us": "ˈkæf.iːn",
+    "source": "https://dictionary.cambridge.org/dictionary/english/caffeine",
+    "checked": "2026-10-10"
+  },
+  "temporary": {
+    "uk": "ˈtem.pər.ər.i",
+    "us": "ˈtem.pə.rer.i",
+    "source": "https://dictionary.cambridge.org/dictionary/english/temporary",
+    "checked": "2026-10-10"
+  },
+  "acceptance": {
+    "uk": "əkˈsep.təns",
+    "us": "əkˈsep.təns",
+    "source": "https://dictionary.cambridge.org/dictionary/english/acceptance",
+    "checked": "2026-10-10"
+  },
+  "bonus": {
+    "uk": "ˈbəʊ.nəs",
+    "us": "ˈboʊ.nəs",
+    "source": "https://dictionary.cambridge.org/dictionary/english/bonus",
+    "checked": "2026-10-10"
+  },
+  "gross": {
+    "uk": "ɡrəʊs",
+    "us": "ɡroʊs",
+    "source": "https://dictionary.cambridge.org/dictionary/english/gross",
+    "checked": "2026-10-10"
+  },
+  "probation": {
+    "uk": "prəˈbeɪ.ʃən",
+    "us": "proʊˈbeɪ.ʃən",
+    "source": "https://dictionary.cambridge.org/dictionary/english/probation",
+    "checked": "2026-10-10"
+  },
+  "offer": {
+    "uk": "ˈɒf.ər",
+    "us": "ˈɑː.fɚ",
+    "source": "https://dictionary.cambridge.org/dictionary/english/offer",
+    "checked": "2026-10-10"
   }
 };

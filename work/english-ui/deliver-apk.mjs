@@ -16,7 +16,7 @@ assert.equal(config.appId, metadata.applicationId);
 assert(!config.server?.url, 'APK must not depend on an external development server');
 const embedded = execFileSync('unzip', ['-p', apk.pathname, 'assets/public/index.html'], { encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
 assert.equal(embedded, await readFile(new URL('./dist/index.html', import.meta.url), 'utf8'));
-assert.equal(chapters.length, 55);
+assert.equal(chapters.length, 67);
 assert(embedded.includes(contentBaseUrl), 'Content update endpoint missing from APK');
 assert(embedded.includes(String(bundledRevision)), 'Bundled content revision missing from APK');
 // Derive delivery counts from the same registry that supplies the bundled page.
