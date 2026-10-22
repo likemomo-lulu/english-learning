@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BookOpen, Bookmark, CircleUserRound, ArrowUpRight, ArrowLeft, ArrowRight, ChevronRight, Search, Play, Pause, Volume2, SkipBack, SkipForward, Eye, EyeOff, X, Download, Upload, SlidersHorizontal, Headphones, Leaf, Sparkles, Coffee, ShoppingBasket, Store, Shirt, Receipt, Utensils, CookingPot, ChefHat, WashingMachine, Hand, Package, BatteryCharging, TramFront, Ticket, Bike, Trees, MessagesSquare, Plane, Luggage, BedDouble, CarFront, LifeBuoy } from 'lucide-react';
+import { BookOpen, Bookmark, CircleUserRound, ArrowUpRight, ArrowLeft, ArrowRight, ChevronRight, Search, Pause, Volume2, X, Download, Upload, SlidersHorizontal, Headphones, Leaf, Sparkles, Coffee, ShoppingBasket, Store, Shirt, Receipt, Utensils, CookingPot, ChefHat, WashingMachine, Hand, Package, BatteryCharging, TramFront, Ticket, Bike, Trees, MessagesSquare, Plane, Luggage, BedDouble, CarFront, LifeBuoy } from 'lucide-react';
 import { bundledContent } from './bundled-content.js';
 import { loadContent, downloadContent } from './content-store.js';
 import { isNative, nativeVoices, nativeStop, nativeSpeak, nativeExportRecords } from './native-services.js';
@@ -12,7 +12,7 @@ const storageKey = 'scene-english-ui-v1';
 const categoryPrefixes = { daily: 'D', travel: 'T', work: 'W' };
 const chapterLabel = id => id.startsWith('W') ? 'WORK' : id.startsWith('T') ? 'TRAVEL' : 'CHAPTER';
 // Retain legacy learned IDs only for backup compatibility; the UI no longer tracks progress.
-const defaults = { favorites: [], learned: [], last: null, speed: 1, chinese: true, fontSize: 18, voice: '' };
+const defaults = { favorites: [], learned: [], last: null, speed: 1, chinese: true, english: true, fontSize: 18, voice: '' };
 // Validate persisted sentence IDs before rendering favorites or merging old backups.
 const initialContentState = loadContent(bundledContent);
 const initialChapters = initialContentState.content.chapters;
@@ -28,6 +28,7 @@ function validateData(value, chapters = initialChapters) {
     last: chapters.some(c => c.id === value.last) ? value.last : null,
     speed: [0.75, 1, 1.25].includes(value.speed) ? value.speed : 1,
     chinese: typeof value.chinese === 'boolean' ? value.chinese : true,
+    english: typeof value.english === 'boolean' ? value.english : true,
     fontSize: [18, 20, 22].includes(value.fontSize) ? value.fontSize : 18,
     voice: typeof value.voice === 'string' ? value.voice : '',
   };
@@ -80,12 +81,28 @@ function App() {
   const speechToken = useRef(0);
   const speechTimer = useRef(null);
   const utteranceRef = useRef(null);
-  const playbackRef = useRef(playback);
   const importRef = useRef(null);
+  const sectionStartRef = useRef(null);
+  const scrollToSection = useRef(false);
   const saveBlocked = useRef(Boolean(initial.error));
   const chapter = chapters.find(c => c.id === chapterId) || chapters[0];
   const lesson = chapter;
-  const groups = tab === 'dialogue' ? lesson.dialogues : lesson.branches;
+  // Conversations and scenario variations share one section and one ordered picker.
+  const practiceItems = [
+    ...lesson.dialogues.map(section => ({ type: '对话', ...section })),
+    ...lesson.branches.map(section => ({ type: '场景', ...section })),
+  ];
+  const sections = [
+    { tab: 'core', part: 0, title: '核心句' },
+    ...practiceItems.map((section, part) => ({ tab: 'practice', part, title: `${section.type} · ${section.title}` })),
+    { tab: 'reference', part: 0, title: '语句速查' },
+  ];
+  const sectionIndex = sections.findIndex(section => section.tab === tab && section.part === part);
+  const chapterIndex = chapters.findIndex(item => item.id === chapter.id);
+  const previousSection = sections[sectionIndex - 1];
+  const nextSection = sections[sectionIndex + 1];
+  const previousChapter = chapters[chapterIndex - 1];
+  const nextChapter = chapters[chapterIndex + 1];
   // Quick reference alternates expression and example in the existing playback queue.
   const referenceLines = lesson.quickReference.flatMap(entry => [
     { id: entry.id, chapterId, en: entry.en },
@@ -93,7 +110,7 @@ function App() {
   ]);
   const lines = page === 'favorites'
     ? data.favorites.map(id => sentenceRegistry.get(id)).filter(Boolean).filter(s => `${s.en} ${s.zh}`.toLowerCase().includes(favoriteQuery.toLowerCase()))
-    : tab === 'reference' ? referenceLines : tab === 'core' ? lesson.lines : groups[part]?.lines || [];
+    : tab === 'reference' ? referenceLines : tab === 'core' ? lesson.lines : practiceItems[part]?.lines || [];
   const activeLine = lines.find(s => s.id === playback.id) || lines[0];
   const change = patch => { saveBlocked.current = false; setData(old => ({ ...old, ...patch })); };
 
@@ -164,7 +181,12 @@ function App() {
     window.speechSynthesis.addEventListener('voiceschanged', update);
     return () => window.speechSynthesis.removeEventListener('voiceschanged', update);
   }, []);
-  useEffect(() => { playbackRef.current = playback; }, [playback]);
+  // Land on the section selector after changing sections from the fixed player.
+  useEffect(() => {
+    if (page !== 'lesson' || !scrollToSection.current) return;
+    scrollToSection.current = false;
+    sectionStartRef.current?.scrollIntoView({ block: 'start' });
+  }, [page, chapterId, tab, part]);
   useEffect(() => {
     const hidden = () => { if (document.hidden) stop(); };
     document.addEventListener('visibilitychange', hidden);
@@ -190,35 +212,33 @@ function App() {
     stop(); setPage(next); setQuery(''); setFavoriteQuery(''); window.scrollTo({ top: 0 });
     window.history.pushState({ page: next }, '', `#${next}`);
   }
-  function togglePlayback(index) {
-    const status = playbackRef.current.status;
-    if (status === 'loading') { stop(); return; }
-    if (status === 'playing') {
-      // Android TTS has no word-level pause; resume restarts the current sentence.
-      if (isNative) stop();
-      else window.speechSynthesis.pause();
-      setPlayback(old => ({ ...old, status: 'paused' }));
-    } else if (status === 'paused') {
-      if (isNative) { speak(index, true); return; }
-      window.speechSynthesis.resume();
-      setPlayback(old => ({ ...old, status: 'playing' }));
-    } else speak(index, true);
-  }
   function openChapter(id) {
     stop(); setChapterId(id); setPage('lesson'); setTab('core'); setPart(0);
     setPlayback({ status: 'idle', id: '', index: 0 }); change({ last: id });
     window.history.pushState({ chapter: id }, '', `#${id}`); window.scrollTo({ top: 0 });
   }
   function switchTab(next) {
-    stop(); setTab(next); setPart(0); setPlayback({ status: 'idle', id: '', index: 0 });
+    selectSection(next);
   }
-  // A generation token prevents cancelled or previous utterances from advancing the queue.
-  function speak(index, continuous = false, queue = lines) {
+  function selectSection(nextTab, nextPart = 0, scroll = false) {
+    scrollToSection.current = scroll;
+    stop(); setTab(nextTab); setPart(nextPart);
+    setPlayback({ status: 'idle', id: '', index: 0 });
+  }
+  // Advance through each lesson section, then continue at the adjacent chapter.
+  function moveSection(direction) {
+    const target = sections[sectionIndex + direction];
+    if (target) { selectSection(target.tab, target.part, true); return; }
+    const targetChapter = chapters[chapterIndex + direction];
+    if (targetChapter) openChapter(targetChapter.id);
+  }
+  // A generation token prevents cancelled or previous utterances from changing the active state.
+  function speak(index, queue = lines) {
     const stopped = stop();
     const sentence = queue[index];
     if (!sentence) return;
     if (isNative) {
-      speakAndroid(index, continuous, queue, stopped, speechToken.current);
+      speakAndroid(index, queue, stopped, speechToken.current);
       return;
     }
     if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
@@ -245,9 +265,6 @@ function App() {
       if (token !== speechToken.current) return;
       clearTimeout(speechTimer.current); utteranceRef.current = null;
       setPlayback({ status: 'idle', id: sentence.id, index });
-      if (continuous && index + 1 < queue.length) {
-        speechTimer.current = setTimeout(() => { if (token === speechToken.current) speak(index + 1, true, queue); }, 450);
-      }
     };
     utterance.onerror = event => {
       if (token !== speechToken.current) return;
@@ -257,8 +274,8 @@ function App() {
     try { window.speechSynthesis.speak(utterance); }
     catch (error) { console.error('Speech request failed:', error); stop(); setToast('朗读暂时不可用，请稍后再试。'); }
   }
-  // Check cancellation after each asynchronous boundary and only advance after native onDone.
-  async function speakAndroid(index, continuous, queue, stopped, token) {
+  // Check cancellation after each asynchronous boundary before updating native playback state.
+  async function speakAndroid(index, queue, stopped, token) {
     const sentence = queue[index];
     setPlayback({ status: 'loading', id: sentence.id, index });
     try {
@@ -277,11 +294,6 @@ function App() {
       if (token !== speechToken.current) return;
       clearTimeout(speechTimer.current);
       setPlayback({ status: 'idle', id: sentence.id, index });
-      if (continuous && index + 1 < queue.length) {
-        speechTimer.current = setTimeout(() => {
-          if (token === speechToken.current) speak(index + 1, true, queue);
-        }, 450);
-      }
     } catch (error) {
       if (token !== speechToken.current) return;
       console.error('Android speech failed:', error);
@@ -334,9 +346,9 @@ function App() {
       <div className="sentence-gutter">{mode === 'dialogue' ? <span className={`role-dot ${s.role === '顾客' ? 'customer' : ''}`}>{s.role.slice(0, 1)}</span> : <span className="sentence-number">{String(i + 1).padStart(2, '0')}</span>}</div>
       <div className="sentence-body">
         <div className="sentence-meta"><span>{s.role}</span><span className="tone">{s.tone}</span>{active && playback.status === 'playing' && <span className="speaking-label">朗读中</span>}<div className="sentence-actions"><IconButton icon={active && playback.status !== 'idle' ? Pause : Volume2} label={active && playback.status !== 'idle' ? '停止朗读' : `播放第 ${i + 1} 句`} className={active ? 'sound active' : 'sound'} onClick={() => active && playback.status !== 'idle' ? stop() : speak(i)} /><IconButton icon={Bookmark} label={favorite ? '取消收藏' : '收藏句子'} className={favorite ? 'bookmarked' : ''} aria-pressed={favorite} onClick={() => toggleFavorite(s.id)} /></div></div>
-        <button className="sentence-read" onClick={() => speak(i)} aria-label={`朗读：${s.en}`}><span className="english" lang="en">{s.en}</span></button>
+        {data.english ? <button className="sentence-read" onClick={() => speak(i)} aria-label={`朗读：${s.en}`}><span className="english" lang="en">{s.en}</span></button> : <p className="hidden-english">英文已隐藏</p>}
         {data.chinese && <p className="translation">{s.zh}</p>}
-        {s.note && <div className="usage-note"><Sparkles size={13} /><p>{s.note}</p></div>}
+        {data.english && s.note && <div className="usage-note"><Sparkles size={13} /><p>{s.note}</p></div>}
         {mode === 'favorite' && <button className="origin-link" onClick={() => openChapter(s.chapterId)}>{chapters.find(c => c.id === s.chapterId)?.title}<ArrowUpRight size={12} /></button>}
       </div>
     </article>;
@@ -361,22 +373,26 @@ function App() {
   }
 
   function lessonView() {
-    return <><div className="lesson-heading"><span className="eyebrow green">{chapterLabel(chapter.id)} {chapter.id.slice(1)}<span className="divider-dot" />{chapter.group}</span><h1>{chapter.title}</h1><p lang="en">{chapter.english}</p></div>
+    return <><div className="lesson-heading"><span className="eyebrow green">{chapterLabel(chapter.id)} {chapter.id.slice(1)}<span className="divider-dot" />{chapter.group}</span><h1>{chapter.title}</h1>{data.english && <p lang="en">{chapter.english}</p>}</div>
       <div className="scenario"><span className="scenario-label">这次的场景</span><p>{lesson.scenario}</p></div>
-      <div className="lesson-tabs" role="tablist" aria-label="学习内容">{[['core', '核心句'], ['dialogue', '对话练习'], ['branch', '场景变化'], ['reference', '语句速查']].map(([id, label]) => <button role="tab" aria-selected={tab === id} className={tab === id ? 'active' : ''} key={id} onClick={() => switchTab(id)}>{label}{id === 'core' && <span>{lesson.lines.length}</span>}</button>)}<IconButton icon={data.chinese ? Eye : EyeOff} label={data.chinese ? '隐藏中文' : '显示中文'} aria-pressed={data.chinese} onClick={() => change({ chinese: !data.chinese })} /></div>
-      {(tab === 'dialogue' || tab === 'branch') && groups.length > 0 && <div className="dialogue-picker">{groups.map((d, i) => <button className={part === i ? 'active' : ''} key={d.title} onClick={() => { stop(); setPart(i); setPlayback({ status: 'idle', id: '', index: 0 }); }}>{d.title}</button>)}</div>}
+      <div className="lesson-tabs-row" ref={sectionStartRef}>
+        <div className="lesson-tabs" role="tablist" aria-label="学习内容">{[['core', '核心句'], ['practice', '对话场景'], ['reference', '语句速查']].map(([id, label]) => <button role="tab" aria-selected={tab === id} className={tab === id ? 'active' : ''} key={id} onClick={() => switchTab(id)}>{label}{id === 'core' && <span>{lesson.lines.length}</span>}</button>)}</div>
+        <div className="language-controls" role="group" aria-label="显示语言">
+          <button type="button" className={`language-toggle ${data.chinese ? 'active' : ''}`} aria-label={data.chinese ? '隐藏中文' : '显示中文'} title={data.chinese ? '隐藏中文' : '显示中文'} aria-pressed={data.chinese} onClick={() => change({ chinese: !data.chinese })}>CN</button>
+          <button type="button" className={`language-toggle ${data.english ? 'active' : ''}`} aria-label={data.english ? '隐藏英文' : '显示英文'} title={data.english ? '隐藏英文' : '显示英文'} aria-pressed={data.english} onClick={() => change({ english: !data.english })}>EN</button>
+        </div>
+      </div>
+      {tab === 'practice' && practiceItems.length > 0 && <div className="dialogue-picker">{practiceItems.map((item, i) => <button className={part === i ? 'active' : ''} aria-pressed={part === i} key={`${item.type}-${item.title}`} onClick={() => selectSection('practice', i)}><span>{item.type}</span><span className="dialogue-title">{item.title}</span></button>)}</div>}
       {tab === 'reference' ? <ol className="quick-reference-list">{lesson.quickReference.map((entry, i) => {
         const playingTerm = playback.id === entry.id && playback.status !== 'idle';
         const playingExample = playback.id === `${entry.id}-EX` && playback.status !== 'idle';
         return <li className="quick-reference-entry" key={entry.id} data-reference={entry.id}>
-          <div className={`reference-heading ${playingTerm ? 'reference-playing' : ''}`} data-sentence={entry.id}><div><h3 lang="en">{entry.en}</h3>{data.chinese && <p className="reference-meaning">{entry.zh}</p>}</div><IconButton icon={playingTerm ? Pause : Volume2} label={playingTerm ? '停止朗读' : `朗读词语：${entry.en}`} onClick={() => playingTerm ? stop() : speak(i * 2)} /></div>
-          <div className="reference-phonetics">{entry.keyword !== entry.en && <span className="reference-keyword">关键词 {entry.keyword}</span>}<span>英 /{entry.phonetics.uk}/</span><span>美 /{entry.phonetics.us}/</span></div>
-          <p className="reference-note">{entry.note}</p>
-          <div className={`reference-example ${playingExample ? 'reference-playing' : ''}`} data-sentence={`${entry.id}-EX`}><button className="reference-example-read" aria-label={playingExample ? '停止朗读例句' : `朗读例句：${entry.exampleEn}`} onClick={() => playingExample ? stop() : speak(i * 2 + 1)}><Volume2 size={16} aria-hidden="true" /><span lang="en">{entry.exampleEn}</span></button>{data.chinese && <p className="reference-example-translation">{entry.exampleZh}</p>}</div>
+          <div className={`reference-heading ${playingTerm ? 'reference-playing' : ''}`} data-sentence={entry.id}><div>{data.english ? <h3 lang="en">{entry.en}</h3> : <p className="hidden-english">英文已隐藏</p>}{data.chinese && <p className="reference-meaning">{entry.zh}</p>}</div><IconButton icon={playingTerm ? Pause : Volume2} label={playingTerm ? '停止朗读' : data.english ? `朗读词语：${entry.en}` : `朗读第 ${i + 1} 个词语`} onClick={() => playingTerm ? stop() : speak(i * 2)} /></div>
+          {data.english && <><div className="reference-phonetics">{entry.keyword !== entry.en && <span className="reference-keyword">关键词 {entry.keyword}</span>}<span>英 /{entry.phonetics.uk}/</span><span>美 /{entry.phonetics.us}/</span></div><p className="reference-note">{entry.note}</p></>}
+          <div className={`reference-example ${playingExample ? 'reference-playing' : ''}`} data-sentence={`${entry.id}-EX`}><button className="reference-example-read" aria-label={playingExample ? '停止朗读例句' : data.english ? `朗读例句：${entry.exampleEn}` : `朗读第 ${i + 1} 个例句`} onClick={() => playingExample ? stop() : speak(i * 2 + 1)}><Volume2 size={16} aria-hidden="true" />{data.english ? <span lang="en">{entry.exampleEn}</span> : <span className="hidden-english">朗读例句</span>}</button>{data.chinese && <p className="reference-example-translation">{entry.exampleZh}</p>}</div>
         </li>;
       })}</ol> : <div className="sentence-list">{lines.map((s, i) => sentenceRow(s, i, tab === 'core' ? 'core' : 'dialogue'))}</div>}
       {!lines.length && <div className="empty-state"><BookOpen size={32} /><h3>这部分文稿还在整理中</h3><button className="text-button" onClick={() => switchTab('core')}>查看核心句<ArrowRight size={16} /></button></div>}
-      {(chapter.ready || chapter.sample) && tab === 'core' && <div className="lesson-end"><button className="text-button" onClick={() => switchTab('dialogue')}>进入对话练习<ArrowRight size={16} /></button></div>}
     </>;
   }
   function favoritesView() {
@@ -398,6 +414,7 @@ function App() {
         <div className="setting-row"><div><span>播放语速</span><small>英文朗读</small></div><select aria-label="默认播放语速" value={data.speed} onChange={e => { stop(); change({ speed: Number(e.target.value) }); }}><option value="0.75">0.75×</option><option value="1">1.0×</option><option value="1.25">1.25×</option></select></div>
         <div className="setting-row"><div><span>英语音色</span><small>{voices.length ? '设备可用音色' : '使用设备默认英语音色'}</small></div><select aria-label="英语音色" value={data.voice} onChange={e => { stop(); change({ voice: e.target.value }); }}><option value="">默认英语音色</option>{voices.map(v => <option key={v.voiceURI} value={v.voiceURI}>{v.name} · {v.lang}{isNative ? (v.localService ? ' · 离线' : ' · 联网') : ''}</option>)}</select></div>
         <div className="setting-row"><span>中文释义</span><label className="toggle"><input type="checkbox" aria-label="显示中文释义" checked={data.chinese} onChange={e => change({ chinese: e.target.checked })} /><span /></label></div>
+        <div className="setting-row"><span>英文原文</span><label className="toggle"><input type="checkbox" aria-label="显示英文原文" checked={data.english} onChange={e => change({ english: e.target.checked })} /><span /></label></div>
         <div className="setting-row"><span>英文字号</span><div className="segmented">{[18, 20, 22].map(size => <button key={size} className={data.fontSize === size ? 'active' : ''} aria-pressed={data.fontSize === size} onClick={() => change({ fontSize: size })}>{size === 18 ? '标准' : size === 20 ? '较大' : '大'}</button>)}</div></div>
       </section>
       <section className="settings-section"><h2>教材内容</h2>
@@ -415,7 +432,7 @@ function App() {
   return <div className={`app-shell ${page === 'lesson' || page === 'favorites' && lines.length ? 'has-player' : ''}`} style={{ '--english-size': `${data.fontSize}px` }}>
     <aside className="sidebar"><Brand /><nav aria-label="主导航">{nav}</nav><div className="sidebar-bottom"><Headphones size={18} /><span>一点时间，一点进步。</span></div></aside>
     <div className="main-shell"><header className={`topbar ${page === 'lesson' ? 'lesson-topbar' : ''}`}>{page === 'lesson' ? <><IconButton icon={ArrowLeft} label="返回章节" onClick={() => navigate('chapters')} /><span>{chapter.title}</span><IconButton icon={SlidersHorizontal} label="学习设置" onClick={() => navigate('profile')} /></> : <><Brand /><span className="topbar-label">生活里的每一句</span><IconButton icon={CircleUserRound} label="我的学习" onClick={() => navigate('profile')} /></>}</header><main id="main" className={page === 'lesson' ? 'lesson-main' : ''}>{page === 'chapters' ? catalog() : page === 'lesson' ? lessonView() : page === 'favorites' ? favoritesView() : profileView()}</main></div>
-    {(page === 'lesson' || page === 'favorites') && lines.length > 0 && <div className="player"><div className="player-inner"><div className="player-info"><span className="player-counter">{String(currentIndex + 1).padStart(2, '0')}<span> / {String(lines.length).padStart(2, '0')}</span></span><span className="player-title">{playback.status === 'loading' ? '正在准备朗读' : playback.status === 'playing' ? '正在朗读' : playback.status === 'paused' ? '已暂停' : '顺序播放'}</span></div><div className="player-controls"><IconButton icon={SkipBack} label="上一句" disabled={currentIndex === 0} onClick={() => speak(currentIndex - 1)} /><IconButton icon={playback.status === 'playing' || playback.status === 'loading' ? Pause : Play} label={playback.status === 'loading' ? '停止播放' : playback.status === 'playing' ? '暂停播放' : playback.status === 'paused' ? '继续播放' : '顺序播放'} className="play-main" onClick={() => togglePlayback(currentIndex)} /><IconButton icon={SkipForward} label="下一句" disabled={currentIndex === lines.length - 1} onClick={() => speak(currentIndex + 1)} /></div><select className="speed-select" aria-label="播放语速" value={data.speed} onChange={e => { stop(); change({ speed: Number(e.target.value) }); }}><option value="0.75">0.75×</option><option value="1">1.0×</option><option value="1.25">1.25×</option></select></div><div className="player-progress"><span style={{ width: `${(currentIndex + 1) / lines.length * 100}%` }} /></div></div>}
+    {(page === 'lesson' || page === 'favorites') && lines.length > 0 && <div className="player"><div className="player-inner"><span className="player-counter" aria-live="polite">{String(page === 'lesson' ? sectionIndex + 1 : currentIndex + 1).padStart(2, '0')}<span> / {String(page === 'lesson' ? sections.length : lines.length).padStart(2, '0')}</span></span><div className="player-controls"><IconButton icon={ArrowLeft} label={page === 'lesson' ? '上一节' : '上一句'} disabled={page === 'lesson' ? !previousSection && !previousChapter : currentIndex === 0} onClick={() => page === 'lesson' ? moveSection(-1) : speak(currentIndex - 1)} /><IconButton icon={ArrowRight} label={page === 'lesson' ? '下一节' : '下一句'} disabled={page === 'lesson' ? !nextSection && !nextChapter : currentIndex === lines.length - 1} onClick={() => page === 'lesson' ? moveSection(1) : speak(currentIndex + 1)} /></div></div></div>}
     <nav className="bottom-nav" aria-label="底部导航">{nav}</nav>
     {toast && <div className="toast" role="status"><span>{toast}</span><IconButton icon={X} label="关闭提示" onClick={() => setToast('')} /></div>}
   </div>;

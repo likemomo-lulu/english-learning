@@ -126,3 +126,46 @@
 .content-update-message{font-size:13px;line-height:1.75;color:#526e60;padding:10px 0;overflow-wrap:anywhere}
 .content-update-message.update-error{color:#9f483c}
 @media(max-width:760px){.quick-reference-entry{padding:18px 0}.reference-heading>.icon-button{width:44px;height:44px}.reference-phonetics{gap:2px 14px;font-size:14px}.reference-note,.reference-meaning,.reference-example-translation{font-size:14px}.reference-example-read{font-size:16px}}
+
+/* Keep the lesson tabs and language visibility controls in one compact row. */
+.lesson-tabs-row{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);scroll-margin-top:82px}
+.lesson-tabs-row .lesson-tabs{flex:1;min-width:0;border:0}
+.language-controls{display:flex;align-items:center;gap:6px;flex:none}
+.language-toggle{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:5px;background:transparent;color:#8b958e;font-size:11px;font-weight:650}
+.language-toggle:hover{border-color:#c6d7cc;background:#f5f8f5}
+.language-toggle[aria-pressed="true"]{border-color:#8eb79f;background:#dff0e6;color:#0f664c}
+.language-toggle[aria-pressed="false"]:hover{color:#8b958e}
+.language-toggle:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.hidden-english{font-size:13px;line-height:1.8;color:#8a928d;font-weight:400}
+.dialogue-picker button{display:inline-flex;align-items:center;gap:7px}
+.dialogue-picker button>span{font-size:10px;color:#8a9a8c;border-right:1px solid var(--line);padding-right:7px}
+.dialogue-picker button.active>span{color:var(--green);border-color:#cfe0d5}
+.player-inner{height:40px;justify-content:center;gap:12px;padding:0 12px}
+.player-counter{font-size:13px;line-height:1;color:#426c4d;white-space:nowrap}
+.player-counter>span{font-size:10px}
+.player-controls{gap:20px}
+.player-controls>.icon-button{width:34px;height:34px}
+.player-controls>.icon-button svg{width:18px;height:18px}
+.has-player main{padding-bottom:64px}
+@media(max-width:760px){
+  .lesson-tabs-row{gap:4px;scroll-margin-top:calc(64px + env(safe-area-inset-top))}
+  .lesson-tabs-row .lesson-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+  .lesson-tabs-row .lesson-tabs>button:not(.icon-button){min-width:0;padding:0 2px;font-size:11px}
+  .language-toggle{width:36px;height:36px;font-size:10px}
+  .app-shell{--phone-player-height:37px}
+  .player-inner{height:var(--phone-player-height);display:flex;gap:8px;padding:0 8px}
+  .player-counter{font-size:12px}
+  .player-counter>span{font-size:9px}
+  .player-controls{gap:17px;justify-content:center}
+  .player-controls>.icon-button{width:34px;height:34px}
+  .has-player main{padding-bottom:calc(var(--phone-player-height) + var(--phone-nav-height) + env(safe-area-inset-bottom) + 16px)}
+}
+@media(max-width:359px){
+  .lesson-tabs-row{gap:0}
+  .lesson-tabs-row .lesson-tabs>button:not(.icon-button){font-size:10px}
+  .language-toggle{width:34px}
+}
+
+/* Keep dialogue choices in two columns and truncate only their titles. */
+.dialogue-picker button{flex:0 1 calc(50% - 5px);width:calc(50% - 5px);max-width:calc(50% - 5px);min-width:0;overflow:hidden;white-space:nowrap}
+.dialogue-picker .dialogue-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
