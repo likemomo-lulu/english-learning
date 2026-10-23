@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BookOpen, Bookmark, CircleUserRound, ArrowUpRight, ArrowLeft, ArrowRight, ChevronRight, Search, Pause, Volume2, X, Download, Upload, SlidersHorizontal, Headphones, Leaf, Sparkles, Coffee, ShoppingBasket, Store, Shirt, Receipt, Utensils, CookingPot, ChefHat, WashingMachine, Hand, Package, BatteryCharging, TramFront, Ticket, Bike, Trees, MessagesSquare, Plane, Luggage, BedDouble, CarFront, LifeBuoy } from 'lucide-react';
+import { BookOpen, Bookmark, CircleUserRound, ArrowUpRight, ArrowLeft, ArrowRight, ChevronRight, Search, Eye, EyeOff, Pause, Volume2, X, Download, Upload, SlidersHorizontal, Headphones, Leaf, Sparkles, Coffee, ShoppingBasket, Store, Shirt, Receipt, Utensils, CookingPot, ChefHat, WashingMachine, Hand, Package, BatteryCharging, TramFront, Ticket, Bike, Trees, MessagesSquare, Plane, Luggage, BedDouble, CarFront, LifeBuoy } from 'lucide-react';
 import { bundledContent } from './bundled-content.js';
 import { loadContent, downloadContent } from './content-store.js';
 import { isNative, nativeVoices, nativeStop, nativeSpeak, nativeExportRecords } from './native-services.js';
@@ -71,6 +71,7 @@ function App() {
   const [query, setQuery] = useState('');
   const [tab, setTab] = useState('core');
   const [part, setPart] = useState(0);
+  const [hiddenSentences, setHiddenSentences] = useState(() => new Set());
   const [playback, setPlayback] = useState({ status: 'idle', id: '', index: 0 });
   const [toast, setToast] = useState(initial.error || initialContentState.error);
   const [voices, setVoices] = useState([]);
@@ -342,11 +343,12 @@ function App() {
   function sentenceRow(s, i, mode = 'core') {
     const active = playback.id === s.id;
     const favorite = data.favorites.includes(s.id);
+    const sentenceHidden = hiddenSentences.has(s.id);
     return <article key={s.id} data-sentence={s.id} className={`sentence ${active ? 'selected' : ''} ${mode === 'dialogue' ? 'dialogue-sentence' : ''}`}>
       <div className="sentence-gutter">{mode === 'dialogue' ? <span className={`role-dot ${s.role === '顾客' ? 'customer' : ''}`}>{s.role.slice(0, 1)}</span> : <span className="sentence-number">{String(i + 1).padStart(2, '0')}</span>}</div>
       <div className="sentence-body">
-        <div className="sentence-meta"><span>{s.role}</span><span className="tone">{s.tone}</span>{active && playback.status === 'playing' && <span className="speaking-label">朗读中</span>}<div className="sentence-actions"><IconButton icon={active && playback.status !== 'idle' ? Pause : Volume2} label={active && playback.status !== 'idle' ? '停止朗读' : `播放第 ${i + 1} 句`} className={active ? 'sound active' : 'sound'} onClick={() => active && playback.status !== 'idle' ? stop() : speak(i)} /><IconButton icon={Bookmark} label={favorite ? '取消收藏' : '收藏句子'} className={favorite ? 'bookmarked' : ''} aria-pressed={favorite} onClick={() => toggleFavorite(s.id)} /></div></div>
-        {data.english ? <button className="sentence-read" onClick={() => speak(i)} aria-label={`朗读：${s.en}`}><span className="english" lang="en">{s.en}</span></button> : <p className="hidden-english">英文已隐藏</p>}
+        <div className="sentence-meta"><span>{s.role}</span><span className="tone">{s.tone}</span>{active && playback.status === 'playing' && <span className="speaking-label">朗读中</span>}<div className="sentence-actions"><IconButton icon={sentenceHidden ? EyeOff : Eye} label={sentenceHidden ? '显示本句英文' : '隐藏本句英文'} className={sentenceHidden ? 'sentence-visibility active' : 'sentence-visibility'} aria-pressed={sentenceHidden} onClick={() => setHiddenSentences(old => { const next = new Set(old); if (next.has(s.id)) next.delete(s.id); else next.add(s.id); return next; })} /><IconButton icon={active && playback.status !== 'idle' ? Pause : Volume2} label={active && playback.status !== 'idle' ? '停止朗读' : `播放第 ${i + 1} 句`} className={active ? 'sound active' : 'sound'} onClick={() => active && playback.status !== 'idle' ? stop() : speak(i)} /><IconButton icon={Bookmark} label={favorite ? '取消收藏' : '收藏句子'} className={favorite ? 'bookmarked' : ''} aria-pressed={favorite} onClick={() => toggleFavorite(s.id)} /></div></div>
+        {data.english && !sentenceHidden ? <button className="sentence-read" onClick={() => speak(i)} aria-label={`朗读：${s.en}`}><span className="english" lang="en">{s.en}</span></button> : <p className="hidden-english">英文已隐藏</p>}
         {data.chinese && <p className="translation">{s.zh}</p>}
         {data.english && s.note && <div className="usage-note"><Sparkles size={13} /><p>{s.note}</p></div>}
         {mode === 'favorite' && <button className="origin-link" onClick={() => openChapter(s.chapterId)}>{chapters.find(c => c.id === s.chapterId)?.title}<ArrowUpRight size={12} /></button>}

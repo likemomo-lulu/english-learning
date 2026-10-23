@@ -169,3 +169,4 @@
 /* Keep dialogue choices in two columns and truncate only their titles. */
 .dialogue-picker button{flex:0 1 calc(50% - 5px);width:calc(50% - 5px);max-width:calc(50% - 5px);min-width:0;overflow:hidden;white-space:nowrap}
 .dialogue-picker .dialogue-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sentence-visibility.active{background:#e0efe5;color:var(--green)}
